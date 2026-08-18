@@ -1,0 +1,25 @@
+# Node / Tailwind
+node_modules/
+npm-debug.log*
+
+# Python / Cloud Functions
+functions/venv/
+**/__pycache__/
+*.pyc
+.env
+functions/.env
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+*-debug.log
+
+# Service account keys - NEVER commit
+serviceAccount*.json
+*serviceaccount*.json
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in · PhishSim Pro</title>
+  <link rel="stylesheet" href="/css/app.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body class="bg-gradient-to-br from-navy-900 to-navy-950">
+  <div class="flex min-h-screen items-center justify-center p-6">
+    <div class="w-full max-w-md">
+      <div class="mb-6 flex items-center justify-center gap-3 text-white">
+        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-600">
+          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="leading-tight">
+          <div class="text-lg font-semibold">PhishSim Pro</div>
+          <div class="text-xs text-slate-400">Security Awareness</div>
+        </div>
+      </div>
+
+      <div class="card p-8">
+        <h1 class="text-xl font-semibold text-slate-900">Admin sign in</h1>
+        <p class="mt-1 text-sm text-slate-500">Researcher and administrator access only.</p>
+
+        <form id="login-form" class="mt-6 space-y-4">
+          <div>
+            <label class="label" for="email">Email</label>
+            <input class="input" type="email" id="email" autocomplete="email" required />
+          </div>
+          <div>
+            <label class="label" for="password">Password</label>
+            <input class="input" type="password" id="password" autocomplete="current-password" required />
+          </div>
+          <p id="login-error" class="hidden text-sm text-red-600"></p>
+          <button type="submit" id="login-btn" class="btn-primary w-full">Sign in</button>
+        </form>
+      </div>
+
+      <p class="mt-4 text-center text-xs text-slate-400">
+        Isolated research system. Not connected to real Eduvos authentication.
+      </p>
+    </div>
+  </div>
+  <script type="module" src="/js/login.js"></script>
+</body>
+</html>

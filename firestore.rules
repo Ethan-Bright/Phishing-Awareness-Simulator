@@ -1,0 +1,53 @@
+rules_version = '2';
+
+// Privacy model for the Phishing Awareness Simulator.
+//
+// Core promise: aggregate-only reporting, never individual risk profiles.
+// The admin dashboard may ONLY read pre-aggregated, non-identifying data.
+// Raw response events, per-participant assignment/outcome rows, and the
+// anonymised-code registry are NEVER readable by clients. All writes and
+// all reads of sensitive collections happen server-side through Cloud
+// Functions using the Admin SDK, which bypasses these rules.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
+    // Aggregated rollups. No individual data lives here. Admin read-only.
+    match /aggregates/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // functions only
+    }
+
+    match /daily_stats/{doc} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Scenario library + campaign metadata (counts only, no responses).
+    match /scenarios/{doc} {
+      allow read: if isAdmin();
+      allow write: if false; // create/approve go through callable functions
+    }
+
+    match /campaigns/{doc} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
+    // Sensitive collections: locked completely to clients.
+    // Reached only via the Admin SDK inside Cloud Functions.
+    match /events/{doc}            { allow read, write: if false; }
+    match /assignments/{doc}       { allow read, write: if false; }
+    match /participant_codes/{doc} { allow read, write: if false; }
+    match /identity_map/{doc}      { allow read, write: if false; }
+
+    // Default deny everything else.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
