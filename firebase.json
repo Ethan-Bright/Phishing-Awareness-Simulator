@@ -35,6 +35,10 @@
       {
         "source": "/api/debrief",
         "function": "scenario_debrief"
+      },
+      {
+        "source": "/api/quiz-batch",
+        "function": "quiz_batch"
       }
     ],
     "headers": [

@@ -12,6 +12,12 @@ export const CATEGORY_LABELS = {
   it_helpdesk: "Fake IT helpdesk"
 };
 
+export const DIFFICULTY_LABELS = {
+  easy: "Easy",
+  medium: "Medium",
+  hard: "Hard"
+};
+
 export const STATUS_PILL = {
   draft: "pill-gray",
   pending_review: "pill-amber",
@@ -19,6 +25,7 @@ export const STATUS_PILL = {
   live: "pill-green",
   running: "pill-blue",
   completed: "pill-green",
+  denied: "pill-red",
   retired: "pill-gray"
 };
 

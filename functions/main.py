@@ -12,6 +12,7 @@ Design principles enforced here:
 import json
 import uuid
 import datetime
+import random
 
 from firebase_functions import https_fn, options
 from firebase_admin import initialize_app, firestore
@@ -157,6 +158,69 @@ def scenario_debrief(req: https_fn.Request) -> https_fn.Response:
     })
 
 
+def _quiz_item(doc):
+    """Public quiz shape. Only called for live, human-approved quiz emails."""
+    s = doc.to_dict() or {}
+    c = s.get("content") or {}
+    debrief = c.get("debrief") or {}
+    return {
+        "id": doc.id,
+        "isPhishing": s.get("isPhishing") is not False,
+        "difficulty": s.get("difficulty") or "medium",
+        "content": {
+            "senderName": c.get("senderName"),
+            "senderEmail": c.get("senderEmail"),
+            "subject": c.get("subject"),
+            "body": c.get("body"),
+            "ctaText": c.get("ctaText") or "",
+        },
+        "verdict": debrief.get("summary") or "",
+        "indicators": c.get("indicators") or [],
+    }
+
+
+def _pick_pool(items, n):
+    hard, medium, easy = [], [], []
+    for item in items:
+        level = item.get("difficulty") or "medium"
+        if level == "hard":
+            hard.append(item)
+        elif level == "easy":
+            easy.append(item)
+        else:
+            medium.append(item)
+    random.shuffle(hard)
+    random.shuffle(medium)
+    random.shuffle(easy)
+    return (hard + medium + easy)[:n]
+
+
+@https_fn.on_request()
+def quiz_batch(req: https_fn.Request) -> https_fn.Response:
+    """GET /api/quiz-batch -> mixed live quiz emails (approved only)."""
+    live = [
+        _quiz_item(doc)
+        for doc in db.collection("scenarios").where("status", "==", "live").stream()
+        if (doc.to_dict() or {}).get("useInQuiz") is True
+    ]
+    phish = [i for i in live if i["isPhishing"]]
+    legit = [i for i in live if not i["isPhishing"]]
+    need_phish, need_legit = 5, 4
+    if len(phish) < need_phish or len(legit) < need_legit:
+        return _json({
+            "ok": False,
+            "error": "Not enough approved quiz emails yet.",
+            "livePhishing": len(phish),
+            "liveLegit": len(legit),
+            "needPhishing": need_phish,
+            "needLegit": need_legit,
+        }, 409)
+
+    batch = _pick_pool(phish, need_phish) + _pick_pool(legit, need_legit)
+    random.shuffle(batch)
+    return _json({"ok": True, "batch": batch})
+
+
 def _apply_event(token: str, event_type: str):
     """Transition an assignment's outcome and keep the aggregate in sync.
 
@@ -243,6 +307,9 @@ def create_scenario(req: https_fn.CallableRequest):
         "content": content,
         "status": "pending_review",
         "aiGenerated": bool(d.get("aiGenerated", False)),
+        "isPhishing": d.get("isPhishing") is not False,
+        "useInQuiz": bool(d.get("useInQuiz", False)),
+        "difficulty": d.get("difficulty") if d.get("difficulty") in ("easy", "medium", "hard") else "medium",
         "createdBy": uid,
         "createdAt": firestore.SERVER_TIMESTAMP,
         "updatedAt": firestore.SERVER_TIMESTAMP,
@@ -257,11 +324,12 @@ def generate_ai_draft(req: https_fn.CallableRequest):
     role = d.get("role")
     category = d.get("category")
     notes = (d.get("notes") or "").strip()
+    email_type = "legit" if d.get("emailType") == "legit" else "phishing"
 
     if role not in VALID_ROLES or category not in VALID_CATEGORIES:
         raise https_fn.HttpsError(https_fn.FunctionsErrorCode.INVALID_ARGUMENT, "Invalid role or category.")
 
-    draft = ai_author.build_draft(role, category, notes)
+    draft = ai_author.build_draft(role, category, notes, email_type)
     ref = db.collection("scenarios").document()
     ref.set({
         "title": draft["title"],
@@ -270,6 +338,9 @@ def generate_ai_draft(req: https_fn.CallableRequest):
         "content": draft["content"],
         "status": "pending_review",
         "aiGenerated": True,
+        "isPhishing": draft["isPhishing"],
+        "useInQuiz": bool(d.get("useInQuiz", False)),
+        "difficulty": d.get("difficulty") if d.get("difficulty") in ("easy", "medium", "hard") else "medium",
         "createdBy": uid,
         "createdAt": firestore.SERVER_TIMESTAMP,
         "updatedAt": firestore.SERVER_TIMESTAMP,
@@ -289,6 +360,12 @@ def approve_scenario(req: https_fn.CallableRequest):
         "approvedAt": firestore.SERVER_TIMESTAMP,
         "updatedAt": firestore.SERVER_TIMESTAMP,
     })
+    snap = db.collection("scenarios").document(sid).get()
+    s = snap.to_dict() or {}
+    if s.get("useInQuiz"):
+        db.collection("quiz_live").document(sid).set(_quiz_item(snap))
+    else:
+        db.collection("quiz_live").document(sid).delete()
     return {"ok": True}
 
 
@@ -302,6 +379,7 @@ def retire_scenario(req: https_fn.CallableRequest):
         "status": "retired",
         "updatedAt": firestore.SERVER_TIMESTAMP,
     })
+    db.collection("quiz_live").document(sid).delete()
     return {"ok": True}
 
 

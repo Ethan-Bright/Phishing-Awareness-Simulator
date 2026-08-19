@@ -6,6 +6,7 @@
   "scripts": {
     "build:css": "tailwindcss -i ./src/styles/input.css -o ./public/css/app.css --minify",
     "watch:css": "tailwindcss -i ./src/styles/input.css -o ./public/css/app.css --watch",
+    "predev": "node scripts/ensure-functions-venv.js",
     "dev": "firebase emulators:start",
     "deploy": "npm run build:css && firebase deploy"
   },

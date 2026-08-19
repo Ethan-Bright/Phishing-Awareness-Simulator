@@ -9,6 +9,7 @@ const NAV = [
   { key: "participants", label: "Participants", href: "/participants.html", icon: icons.participants },
   { key: "groups", label: "Groups", href: "/groups.html", icon: icons.groups },
   { key: "reports", label: "Reports", href: "/reports.html", icon: icons.reports },
+  { key: "quiz-library", label: "Quiz library", href: "/quiz-library.html", icon: icons.shieldCheck },
   { key: "settings", label: "Settings", href: "/settings.html", icon: icons.settings }
 ];
 

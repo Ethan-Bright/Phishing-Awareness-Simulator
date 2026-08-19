@@ -88,9 +88,11 @@ function render() {
 }
 
 function newModal() {
-  const live = scenarios.filter((s) => s.status === "live");
+  // Campaigns measure phishing outcomes (clicked/submitted/reported), so
+  // legitimate training scenarios are excluded. Those are used in the quiz.
+  const live = scenarios.filter((s) => s.status === "live" && s.isPhishing !== false);
   if (!live.length) {
-    return openModal("New campaign", `<p class="text-sm text-slate-600">You need at least one <strong>live</strong> scenario first. Create and approve one on the Scenarios page.</p>`);
+    return openModal("New campaign", `<p class="text-sm text-slate-600">You need at least one <strong>live</strong> phishing scenario first. Create and approve one on the Scenarios page.</p>`);
   }
   const opts = live.map((s) =>
     `<option value="${s.id}">${escapeHtml(s.title)} — ${ROLE_LABELS[s.role]} / ${CATEGORY_LABELS[s.category]}</option>`).join("");

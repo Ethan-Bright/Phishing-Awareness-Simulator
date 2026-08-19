@@ -54,10 +54,101 @@ BASE_TIPS = [
     "Report anything suspicious using the Report Phishing button",
 ]
 
+LEGIT_TIPS = [
+    "Official senders use the organisation's real domain (eduvos.com, nsfas.org.za)",
+    "Legitimate messages rarely demand urgent action or threaten account loss",
+    "Real IT, HR and funding teams never ask for your password or banking details by email",
+    "When unsure, verify through the official website or phone the department yourself",
+]
 
-def build_draft(role: str, category: str, notes: str = "") -> dict:
+
+def _build_legit_draft(ctx: dict, category: str, titled: str, note_line: str) -> dict:
+    """Legitimate counterpart drafts: same topics as the phishing templates but
+    with the real domain, no urgency, and no credential request. Their
+    "indicators" are legitimacy cues shown in the debrief."""
+    if category == "nsfas":
+        subject = "NSFAS allowance payment dates for this term"
+        sender_name = "NSFAS"
+        sender_email = "noreply@nsfas.org.za"
+        body = (
+            f"Dear {titled},\n\n"
+            "Allowance payments for this term will be processed on the last Friday of "
+            "each month. No action is required from you. You can view your payment "
+            "history any time by signing in to myNSFAS - type my.nsfas.org.za directly "
+            "into your browser.\n\n"
+            "If you have questions, contact your campus financial aid office." + note_line
+        )
+        indicators = [
+            "Sender uses the official nsfas.org.za domain",
+            "No urgency, deadline or threat of losing funding",
+            "Does not ask for banking, ID or login details",
+            "Tells you to type the official address yourself instead of clicking a link",
+        ]
+        summary = "A genuine informational NSFAS notice: official domain, no urgency, no request for details."
+    elif category == "it_helpdesk":
+        subject = "Planned maintenance: email unavailable Saturday 02:00-04:00"
+        sender_name = "Eduvos IT Services"
+        sender_email = "ithelpdesk@eduvos.com"
+        body = (
+            "Hello,\n\n"
+            "Scheduled maintenance will take place this Saturday between 02:00 and 04:00. "
+            f"Email and {ctx['hook']} may be briefly unavailable during this window. "
+            "No action is required - your account and password are not affected.\n\n"
+            "Reference: change ticket MNT-2214. Queries: log a ticket on the IT service desk." + note_line
+        )
+        indicators = [
+            "Sender uses the official eduvos.com domain",
+            "No action requested and nothing to click or sign in to",
+            "Includes a specific change ticket reference you can verify",
+            "States clearly that your password is not affected",
+        ]
+        summary = "A genuine maintenance notice: official domain, a verifiable ticket number, and no request to click or sign in."
+    else:  # eduvos_portal
+        subject = f"{ctx['portal']}: scheduled update notice"
+        sender_name = "Eduvos Student Services"
+        sender_email = "studentservices@eduvos.com"
+        body = (
+            f"Dear {titled},\n\n"
+            f"The {ctx['portal']} will receive a scheduled update this weekend. "
+            "Sign in as usual through the official website or your saved bookmark - "
+            "there is no deadline and nothing further you need to do.\n\n"
+            "If you cannot access your account afterwards, visit the campus IT office." + note_line
+        )
+        indicators = [
+            "Sender uses the official eduvos.com domain",
+            "Informational only - no deadline, threat or pressure",
+            "Directs you to sign in the usual way, not through an email link",
+            "Offers an in-person verification route for problems",
+        ]
+        summary = f"A genuine {ctx['portal']} notice. It never asks you to click a link or confirm details."
+
+    return {
+        "title": f"[AI draft - legit] {subject}",
+        "isPhishing": False,
+        "content": {
+            "senderName": sender_name,
+            "senderEmail": sender_email,
+            "subject": subject,
+            "body": body,
+            "ctaText": "",
+            "landingType": "link",
+            "portalName": ctx["portal"],
+            "indicators": indicators,
+            "debrief": {
+                "summary": summary,
+                "tips": LEGIT_TIPS,
+            },
+        },
+    }
+
+
+def build_draft(role: str, category: str, notes: str = "", email_type: str = "phishing") -> dict:
     ctx = ROLE_CONTEXT.get(role, ROLE_CONTEXT["student"])
     note_line = f"\n\nContext note for reviewer: {notes}" if notes else ""
+
+    if email_type == "legit":
+        audience_title = ctx["audience"].rstrip("s").title()
+        return _build_legit_draft(ctx, category, audience_title, note_line)
 
     if category == "nsfas":
         subject = "Action required: NSFAS funding confirmation pending"
@@ -120,6 +211,7 @@ def build_draft(role: str, category: str, notes: str = "") -> dict:
 
     return {
         "title": f"[AI draft] {subject}",
+        "isPhishing": True,
         "content": {
             "senderName": sender_name,
             "senderEmail": sender_email,
