@@ -32,13 +32,23 @@ function sidebarHTML(active) {
     </div>
     <nav class="mt-2 flex-1 space-y-1 px-3">${items}</nav>
     <div class="border-t border-white/10 p-3">
-      <div class="flex items-center gap-3 rounded-lg px-2 py-2">
-        <div class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-sm font-semibold" id="shell-avatar">A</div>
-        <div class="min-w-0 flex-1 leading-tight">
-          <div class="truncate text-sm font-medium" id="shell-user-name">Admin</div>
-          <div class="truncate text-xs text-slate-400" id="shell-user-email">&nbsp;</div>
+      <div class="relative">
+        <div id="shell-user-menu" role="menu" aria-labelledby="shell-user-btn" class="absolute bottom-full left-0 right-0 z-30 mb-2 hidden overflow-hidden rounded-lg border border-white/10 bg-navy-800 py-1 shadow-lg">
+          <a href="/settings.html" role="menuitem" class="user-menu-item">
+            ${icons.settings}<span>Settings</span>
+          </a>
+          <button type="button" id="shell-logout" role="menuitem" class="user-menu-item">
+            ${icons.logout}<span>Sign out</span>
+          </button>
         </div>
-        <button id="shell-logout" title="Sign out" class="rounded-md p-1.5 text-slate-400 hover:bg-white/10 hover:text-white">${icons.logout}</button>
+        <button type="button" id="shell-user-btn" class="user-trigger" aria-haspopup="menu" aria-expanded="false" aria-controls="shell-user-menu">
+          <div class="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-sm font-semibold" id="shell-avatar">A</div>
+          <div class="min-w-0 flex-1 leading-tight">
+            <div class="truncate text-sm font-medium" id="shell-user-name">Admin</div>
+            <div class="truncate text-xs text-slate-400" id="shell-user-email">&nbsp;</div>
+          </div>
+          <span class="user-chevron">${icons.chevronDown}</span>
+        </button>
       </div>
     </div>
   </aside>`;
@@ -78,6 +88,29 @@ export function mountShell({ active, title, subtitle }) {
     document.getElementById("shell-user-email").textContent = user.email || "";
     document.getElementById("shell-avatar").textContent = (name[0] || "A").toUpperCase();
   }
+
+  const userBtn = document.getElementById("shell-user-btn");
+  const userMenu = document.getElementById("shell-user-menu");
+
+  function setUserMenuOpen(open) {
+    userMenu.classList.toggle("hidden", !open);
+    userBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  userBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setUserMenuOpen(userMenu.classList.contains("hidden"));
+  });
+
+  userMenu.addEventListener("click", (event) => event.stopPropagation());
+
+  document.addEventListener("click", () => setUserMenuOpen(false));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !userMenu.classList.contains("hidden")) {
+      setUserMenuOpen(false);
+      userBtn.focus();
+    }
+  });
 
   document.getElementById("shell-logout").addEventListener("click", async () => {
     await signOut(auth);

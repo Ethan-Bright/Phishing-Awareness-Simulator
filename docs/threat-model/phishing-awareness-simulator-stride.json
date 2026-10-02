@@ -1,0 +1,4534 @@
+{
+  "version": "2.3.0",
+  "summary": {
+    "title": "Phishing Awareness Simulator - STRIDE threat model",
+    "owner": "Phishing Awareness Simulator research team",
+    "description": "Threat model of the Eduvos phishing-awareness simulator (Firebase Hosting, Python Cloud Functions, Firestore). Framework: STRIDE on a data-flow diagram, with CIA impact. Scope is the simulator and study environment, not live campus email or identity systems. Open this file in OWASP Threat Dragon 2.x.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [
+      {
+        "name": "Project researcher"
+      }
+    ],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "Context diagram",
+        "description": "System context for the phishing awareness simulator. Trust boundary TB4 is the public internet versus Firebase Hosting.",
+        "diagramType": "STRIDE",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.3.0",
+        "cells": [
+          {
+            "position": {
+              "x": 20,
+              "y": 40
+            },
+            "size": {
+              "width": 230,
+              "height": 370
+            },
+            "attrs": {
+              "label": {
+                "text": "TB4: Public internet vs Firebase Hosting (HTTPS)"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "id": "540f3570-124a-4971-8e02-634eb7a47681",
+            "zIndex": -1,
+            "data": {
+              "type": "tm.BoundaryBox",
+              "name": "TB4: Public internet vs Firebase Hosting (HTTPS)",
+              "description": "Untrusted browsers. TLS terminates at Firebase Hosting.",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 380,
+              "y": 20
+            },
+            "size": {
+              "width": 420,
+              "height": 70
+            },
+            "attrs": {
+              "text": {
+                "text": "Context DFD: Phishing Awareness Simulator (Eduvos study)\nSTRIDE / CIA. Out of scope: live Eduvos mail and identity systems."
+              }
+            },
+            "visible": true,
+            "shape": "td-text-block",
+            "zIndex": 1,
+            "id": "80d25854-9bb4-4178-9153-cd1d90ebda83",
+            "data": {
+              "type": "tm.Text",
+              "name": "Context DFD: Phishing Awareness Simulator (Eduvos study)\nSTRIDE / CIA. Out of scope: live Eduvos mail and identity systems.",
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 40,
+              "y": 80
+            },
+            "size": {
+              "width": 160,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "Participant"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "b7fafe8b-3822-46d3-acfb-ec8d9f743aee"
+                },
+                {
+                  "group": "right",
+                  "id": "95070db8-452c-4553-9bdf-751292ad49c3"
+                },
+                {
+                  "group": "bottom",
+                  "id": "c0d12770-38d8-4fdd-8864-85f31eb15d66"
+                },
+                {
+                  "group": "left",
+                  "id": "ba58a160-4994-4abc-a660-ac5ffe5cac31"
+                }
+              ]
+            },
+            "id": "d17e6be6-1d27-42b5-a6c2-07d7cd657ab9",
+            "data": {
+              "name": "Participant",
+              "description": "Unauthenticated learner using a tokenised campaign link or the public quiz.",
+              "type": "tm.Actor",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Stolen assignment token used as participant",
+                  "type": "Spoofing",
+                  "description": "Anyone who obtains a campaign link can open the scenario and record events. The token is the participant identity; there is no login on this path.",
+                  "mitigation": "UUID tokens; distribute links only on the ethics-approved channel; complete campaigns promptly; treat link lists like credentials.",
+                  "modelType": "STRIDE",
+                  "id": "2a77bfc4-bb06-4dab-bd57-0f6dcba95d23"
+                }
+              ],
+              "hasOpenThreats": true,
+              "providesAuthentication": false
+            }
+          },
+          {
+            "position": {
+              "x": 40,
+              "y": 280
+            },
+            "size": {
+              "width": 180,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "Researcher / administrator"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 3,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "fa9e62b6-bd37-4892-9a93-173a23dc90e1"
+                },
+                {
+                  "group": "right",
+                  "id": "792af59e-c864-438b-9d48-13ae7aa4cbf5"
+                },
+                {
+                  "group": "bottom",
+                  "id": "1710a30a-47d9-453b-b99d-72e16875f010"
+                },
+                {
+                  "group": "left",
+                  "id": "e5c1797a-76d3-41d1-b79f-25746332a98c"
+                }
+              ]
+            },
+            "id": "ee448b12-b217-46ff-b985-150d10f90524",
+            "data": {
+              "name": "Researcher / administrator",
+              "description": "Signs in with Firebase Auth. Access gated by the admin custom claim.",
+              "type": "tm.Actor",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Administrator session hijack",
+                  "type": "Spoofing",
+                  "description": "Phishing or password reuse against the researcher Google/Firebase account yields dashboard access.",
+                  "mitigation": "Firebase Auth plus admin custom claim on the client and on every callable; few admin users; MFA.",
+                  "modelType": "STRIDE",
+                  "id": "0c72a76a-0163-4d3e-a314-6c7c27f67c2c"
+                }
+              ],
+              "hasOpenThreats": true,
+              "providesAuthentication": true
+            }
+          },
+          {
+            "position": {
+              "x": 380,
+              "y": 160
+            },
+            "size": {
+              "width": 180,
+              "height": 140
+            },
+            "attrs": {
+              "text": {
+                "text": "Phishing Awareness\nSimulator"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 4,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "496df4b4-fabe-4133-9717-b5a1a465cd4c"
+                },
+                {
+                  "group": "right",
+                  "id": "23cf6978-3cfc-4549-ad39-3a7f4c4f8698"
+                },
+                {
+                  "group": "bottom",
+                  "id": "6493b479-c50b-492d-9cc1-152775469d8a"
+                },
+                {
+                  "group": "left",
+                  "id": "04f1972e-2141-423a-83a1-29f2dc225e51"
+                }
+              ]
+            },
+            "id": "7f5554a3-fcfc-4e18-b00a-c755d2581818",
+            "data": {
+              "name": "Phishing Awareness\nSimulator",
+              "description": "Web app on Firebase Hosting, Python Cloud Functions, and Firestore. Delivers simulated phishing, records outcomes, quiz, and aggregate reporting.",
+              "type": "tm.Process",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Public function flooding",
+                  "type": "Denial of service",
+                  "description": "Unauthenticated /api/scenario, /api/event, and /api/quiz-batch can be flooded, stalling a live campaign or raising Blaze-plan cost.",
+                  "mitigation": "Keep campaign URLs unlisted; Cloud quotas; complete campaigns when finished. No app-level rate limit yet.",
+                  "modelType": "STRIDE",
+                  "id": "5fa0d5ec-cd25-4cdc-870b-a91af7fd9320"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Fake login captures real passwords",
+                  "type": "Information disclosure",
+                  "description": "A participant may type a real campus password into the simulated portal.",
+                  "mitigation": "Browser discards typed values; server records only that a submission occurred; isolated from Eduvos IdP.",
+                  "modelType": "STRIDE",
+                  "id": "edc355b2-1c83-4d96-952a-864d2642c862"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Unapproved or harmful scenario published",
+                  "type": "Tampering",
+                  "description": "A rogue or rushed admin could publish offensive, illegally targeted, or too-realistic copy (real staff names, live campus URLs).",
+                  "mitigation": "Drafts start as pending_review; approve_scenario required for live and quiz_live; review checklist.",
+                  "modelType": "STRIDE",
+                  "id": "6d5156b4-e51f-46f4-b1d5-8d7119e6c0d0"
+                }
+              ],
+              "hasOpenThreats": true
+            }
+          },
+          {
+            "position": {
+              "x": 720,
+              "y": 170
+            },
+            "size": {
+              "width": 170,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "Google Cloud /\nFirebase"
+              },
+              "body": {
+                "stroke": "#333333",
+                "strokeWidth": 1,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 5,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "29a94e72-7a88-49c1-9390-89b208b90679"
+                },
+                {
+                  "group": "right",
+                  "id": "04a9b5ab-b46e-4a81-bda9-5098b049cc16"
+                },
+                {
+                  "group": "bottom",
+                  "id": "dcf38912-3d92-4de4-bf4c-e3a82de12d21"
+                },
+                {
+                  "group": "left",
+                  "id": "ea7ba1a2-c8b6-4b10-a41c-4436605dd2fa"
+                }
+              ]
+            },
+            "id": "41dee75c-01b0-41c7-ae00-dbc304b56b57",
+            "data": {
+              "name": "Google Cloud /\nFirebase",
+              "description": "Hosting, Auth, Functions, Firestore. Platform identity and encryption at rest.",
+              "type": "tm.Actor",
+              "isTrustBoundary": false,
+              "outOfScope": true,
+              "reasonOutOfScope": "Platform operated by Google; in-scope is application config and data only.",
+              "threats": [],
+              "hasOpenThreats": false,
+              "providesAuthentication": false
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 10,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Tokenised scenario / quiz (HTTPS)",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Tokenised scenario / quiz (HTTPS)",
+              "description": "Participant opens /s.html?t=TOKEN or /quiz.html. Crosses TB1 and TB4.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Token leakage discloses outcome and debrief",
+                  "type": "Information disclosure",
+                  "description": "A leaked token lets a third party fetch debrief content and the recorded outcome for that assignment.",
+                  "mitigation": "Withhold indicators until debrief; client-denied assignment collection; short campaign windows.",
+                  "modelType": "STRIDE",
+                  "id": "c25d1154-3795-4a40-a964-45ca2c136380"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Cleartext interception of study traffic",
+                  "type": "Information disclosure",
+                  "description": "Participant and admin traffic crosses the public internet.",
+                  "mitigation": "Firebase Hosting enforces HTTPS; HSTS, X-Frame-Options DENY, nosniff, no-referrer in firebase.json.",
+                  "modelType": "STRIDE",
+                  "id": "5289d6bc-d9c9-439a-a535-6ee6ad9feedb"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "4d98969a-cfc8-4080-a39a-c2da338adf89",
+            "source": {
+              "cell": "d17e6be6-1d27-42b5-a6c2-07d7cd657ab9"
+            },
+            "target": {
+              "cell": "7f5554a3-fcfc-4e18-b00a-c755d2581818"
+            },
+            "vertices": [
+              {
+                "x": 260,
+                "y": 120
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 11,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Admin sign-in and dashboard (HTTPS)",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Admin sign-in and dashboard (HTTPS)",
+              "description": "Firebase Auth session plus admin claim. Crosses TB2 and TB4.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Elevation via admin custom claim or Admin SDK",
+                  "type": "Elevation of privilege",
+                  "description": "The admin claim is minted by set_admin.py / service account. A leaked key or mis-granted claim exposes approve, launch, and function-accessible collections.",
+                  "mitigation": "Never commit service accounts; unique strong passwords; MFA; review Cloud Audit logs.",
+                  "modelType": "STRIDE",
+                  "id": "60f371f5-e80a-4404-b947-cca6957d84e9"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "98608520-895a-4d60-8c1d-02cabb24822e",
+            "source": {
+              "cell": "ee448b12-b217-46ff-b985-150d10f90524"
+            },
+            "target": {
+              "cell": "7f5554a3-fcfc-4e18-b00a-c755d2581818"
+            },
+            "vertices": [
+              {
+                "x": 250,
+                "y": 280
+              }
+            ]
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 12,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Managed cloud services",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Managed cloud services",
+              "description": "Hosting, callable/HTTP functions, Firestore Admin SDK. Crosses TB3 inside GCP.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "HTTPS",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "c6351db4-7008-4b9e-afd3-b8135eeb1020",
+            "source": {
+              "cell": "7f5554a3-fcfc-4e18-b00a-c755d2581818"
+            },
+            "target": {
+              "cell": "41dee75c-01b0-41c7-ae00-dbc304b56b57"
+            },
+            "vertices": [
+              {
+                "x": 640,
+                "y": 230
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 1,
+        "title": "Phishing simulator L1",
+        "description": "Level-1 data flow from modelling documentation section 4.2: processes P1\u2013P6, stores DS1\u2013DS8, trust boundaries TB1\u2013TB4, STRIDE threats.",
+        "diagramType": "STRIDE",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.3.0",
+        "cells": [
+          {
+            "position": {
+              "x": 10,
+              "y": 10
+            },
+            "size": {
+              "width": 250,
+              "height": 820
+            },
+            "attrs": {
+              "label": {
+                "text": "TB4: Public internet vs Hosting"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "id": "59645a7a-5457-43c9-8ad6-3b7d52fe597d",
+            "zIndex": -4,
+            "data": {
+              "type": "tm.BoundaryBox",
+              "name": "TB4: Public internet vs Hosting",
+              "description": "Participant and researcher browsers on the public internet. HTTPS/HSTS at Hosting.",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 280,
+              "y": 10
+            },
+            "size": {
+              "width": 280,
+              "height": 430
+            },
+            "attrs": {
+              "label": {
+                "text": "TB1: Participant vs Functions"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "id": "553b1e48-d952-47b7-b16f-d38fc0337556",
+            "zIndex": -3,
+            "data": {
+              "type": "tm.BoundaryBox",
+              "name": "TB1: Participant vs Functions",
+              "description": "Unauthenticated HTTP APIs: scenario, event, debrief, quiz-batch.",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 280,
+              "y": 460
+            },
+            "size": {
+              "width": 280,
+              "height": 370
+            },
+            "attrs": {
+              "label": {
+                "text": "TB2: Admin browser vs callables/rules"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "id": "eb18f45c-2ac1-4af2-ac0b-7e0796142883",
+            "zIndex": -3,
+            "data": {
+              "type": "tm.BoundaryBox",
+              "name": "TB2: Admin browser vs callables/rules",
+              "description": "Authenticated dashboard and HTTPS callables. Admin claim required.",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 590,
+              "y": 10
+            },
+            "size": {
+              "width": 280,
+              "height": 820
+            },
+            "attrs": {
+              "label": {
+                "text": "TB3: Functions Admin SDK vs Firestore"
+              }
+            },
+            "visible": true,
+            "shape": "trust-boundary-box",
+            "id": "82b0548c-4ef8-432b-92b9-36ba7ec2937d",
+            "zIndex": -2,
+            "data": {
+              "type": "tm.BoundaryBox",
+              "name": "TB3: Functions Admin SDK vs Firestore",
+              "description": "Sensitive collections are client-denied. Writes via Admin SDK only.",
+              "isTrustBoundary": true,
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 10,
+              "y": 840
+            },
+            "size": {
+              "width": 860,
+              "height": 55
+            },
+            "attrs": {
+              "text": {
+                "text": "L1 DFD (section 4.2). Red borders = open STRIDE threats.\nFlows: token APIs unauthenticated; admin path uses Auth + claim."
+              }
+            },
+            "visible": true,
+            "shape": "td-text-block",
+            "zIndex": 1,
+            "id": "1d538932-e496-4893-84f5-c32cc55b9b61",
+            "data": {
+              "type": "tm.Text",
+              "name": "L1 DFD (section 4.2). Red borders = open STRIDE threats.\nFlows: token APIs unauthenticated; admin path uses Auth + claim.",
+              "hasOpenThreats": false
+            }
+          },
+          {
+            "position": {
+              "x": 40,
+              "y": 80
+            },
+            "size": {
+              "width": 170,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "Participant\n(browser)"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 2,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "5bc7a4f3-07d4-4f8c-a02e-aa9918af35cd"
+                },
+                {
+                  "group": "right",
+                  "id": "65129a2d-0ab1-4af6-addb-f2163cdce87a"
+                },
+                {
+                  "group": "bottom",
+                  "id": "ca399d55-88fc-4ff0-adca-8782fe7ce444"
+                },
+                {
+                  "group": "left",
+                  "id": "f0fa34c5-bb32-4c42-a973-1e9e340d3bd9"
+                }
+              ]
+            },
+            "id": "7e71fb12-6378-498e-8b96-f47a60dabccf",
+            "data": {
+              "name": "Participant\n(browser)",
+              "description": "No Firebase Auth. Identity is the assignment token on the campaign link.",
+              "type": "tm.Actor",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Stolen assignment token used as participant",
+                  "type": "Spoofing",
+                  "description": "Anyone who obtains a campaign link can open the scenario and record events. The token is the participant identity; there is no login on this path.",
+                  "mitigation": "UUID tokens; distribute links only on the ethics-approved channel; complete campaigns promptly; treat link lists like credentials.",
+                  "modelType": "STRIDE",
+                  "id": "a60870b6-4c3e-4c51-8a32-aa7f2940ee6c"
+                }
+              ],
+              "hasOpenThreats": true,
+              "providesAuthentication": false
+            }
+          },
+          {
+            "position": {
+              "x": 40,
+              "y": 560
+            },
+            "size": {
+              "width": 170,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "Researcher /\nadministrator"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "actor",
+            "zIndex": 3,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "c786c029-a90e-4794-a4fe-dd7feba31552"
+                },
+                {
+                  "group": "right",
+                  "id": "1987cc97-111b-4ba8-9f44-901a204084a7"
+                },
+                {
+                  "group": "bottom",
+                  "id": "a54cacde-d9b7-4f14-a882-6934aaec969c"
+                },
+                {
+                  "group": "left",
+                  "id": "3484ade7-db17-423e-8629-ade0b9676d4a"
+                }
+              ]
+            },
+            "id": "cca5b9af-eb24-4e74-bac1-12686635ca35",
+            "data": {
+              "name": "Researcher /\nadministrator",
+              "description": "Firebase Auth user with admin custom claim.",
+              "type": "tm.Actor",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Administrator session hijack",
+                  "type": "Spoofing",
+                  "description": "Phishing or password reuse against the researcher Google/Firebase account yields dashboard access.",
+                  "mitigation": "Firebase Auth plus admin custom claim on the client and on every callable; few admin users; MFA.",
+                  "modelType": "STRIDE",
+                  "id": "6bdc0d2c-16b6-4aee-98f9-b7269665da90"
+                }
+              ],
+              "hasOpenThreats": true,
+              "providesAuthentication": true
+            }
+          },
+          {
+            "position": {
+              "x": 330,
+              "y": 30
+            },
+            "size": {
+              "width": 150,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "P1 Scenario\ndelivery"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 4,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "3b8150a6-4486-4ea0-9141-9b31304cd34b"
+                },
+                {
+                  "group": "right",
+                  "id": "583c67c4-cea9-474d-8bc4-9bcabb7b667e"
+                },
+                {
+                  "group": "bottom",
+                  "id": "d07bf679-1952-4ace-9299-fed763822865"
+                },
+                {
+                  "group": "left",
+                  "id": "590ff449-38d1-4f23-87dd-e5a7562987ee"
+                }
+              ]
+            },
+            "id": "8660471f-8712-4acd-92e2-9caadbf0be12",
+            "data": {
+              "name": "P1 Scenario\ndelivery",
+              "description": "GET /api/scenario?t= TOKEN. Returns email content only. Records opened if campaign is running.",
+              "type": "tm.Process",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Stolen assignment token used as participant",
+                  "type": "Spoofing",
+                  "description": "Anyone who obtains a campaign link can open the scenario and record events. The token is the participant identity; there is no login on this path.",
+                  "mitigation": "UUID tokens; distribute links only on the ethics-approved channel; complete campaigns promptly; treat link lists like credentials.",
+                  "modelType": "STRIDE",
+                  "id": "b46cad40-5052-4394-ac55-e6594880e47c"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Public function flooding",
+                  "type": "Denial of service",
+                  "description": "Unauthenticated /api/scenario, /api/event, and /api/quiz-batch can be flooded, stalling a live campaign or raising Blaze-plan cost.",
+                  "mitigation": "Keep campaign URLs unlisted; Cloud quotas; complete campaigns when finished. No app-level rate limit yet.",
+                  "modelType": "STRIDE",
+                  "id": "8cbbe2d6-eb7c-4e96-974b-11862d06622a"
+                }
+              ],
+              "hasOpenThreats": true
+            }
+          },
+          {
+            "position": {
+              "x": 330,
+              "y": 140
+            },
+            "size": {
+              "width": 150,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "P2 Event\nrecording"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 5,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "1f7673ca-2a0f-493d-8947-25b7159be1b2"
+                },
+                {
+                  "group": "right",
+                  "id": "68685281-1b3f-49d9-a03a-805de959527b"
+                },
+                {
+                  "group": "bottom",
+                  "id": "958b161c-132b-4dc8-a32b-9dd97d211e95"
+                },
+                {
+                  "group": "left",
+                  "id": "073670a1-292b-4ca9-87d5-8a23336274f5"
+                }
+              ]
+            },
+            "id": "5eae2856-aa5b-4c06-a22b-553574975e72",
+            "data": {
+              "name": "P2 Event\nrecording",
+              "description": "POST /api/event {token, type}. Never stores submitted form input. Ranked outcomes.",
+              "type": "tm.Process",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Unauthenticated POST /api/event with a leaked token",
+                  "type": "Tampering",
+                  "description": "A token holder can send clicked, submitted, or reported and distort study integrity. Outcome ranking limits some replay, but does not stop a valid token from choosing an action.",
+                  "mitigation": "Ranked outcomes; closed campaigns stop recording; no client writes to aggregates. Review aggregate anomalies; do not treat results as an invigilated exam.",
+                  "modelType": "STRIDE",
+                  "id": "fb02007e-2279-47fc-95c6-92f3bc22a110"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Fake login captures real passwords",
+                  "type": "Information disclosure",
+                  "description": "A participant may type a real campus password into the simulated portal.",
+                  "mitigation": "Browser discards typed values; server records only that a submission occurred; isolated from Eduvos IdP.",
+                  "modelType": "STRIDE",
+                  "id": "155279f9-ef18-4dcc-a354-ea4bc0b173e8"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Public function flooding",
+                  "type": "Denial of service",
+                  "description": "Unauthenticated /api/scenario, /api/event, and /api/quiz-batch can be flooded, stalling a live campaign or raising Blaze-plan cost.",
+                  "mitigation": "Keep campaign URLs unlisted; Cloud quotas; complete campaigns when finished. No app-level rate limit yet.",
+                  "modelType": "STRIDE",
+                  "id": "b937963e-e6aa-4934-a81c-0cb622d95775"
+                }
+              ],
+              "hasOpenThreats": true
+            }
+          },
+          {
+            "position": {
+              "x": 330,
+              "y": 250
+            },
+            "size": {
+              "width": 150,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "P3 Debrief"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 6,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "3978ee47-fffb-4072-9312-f2e170f4ed76"
+                },
+                {
+                  "group": "right",
+                  "id": "fee06e50-4341-476a-8d1e-cdbc7e0efa53"
+                },
+                {
+                  "group": "bottom",
+                  "id": "29845fad-a607-432a-9965-dfcf59d44574"
+                },
+                {
+                  "group": "left",
+                  "id": "66e57cba-3f94-4f81-81f3-0835a34af711"
+                }
+              ]
+            },
+            "id": "f7e61ba0-7cd2-4aa2-8e0f-0d1d80c262aa",
+            "data": {
+              "name": "P3 Debrief",
+              "description": "GET /api/debrief?t= TOKEN. Returns indicators, tips, and recorded outcome after a response.",
+              "type": "tm.Process",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Token leakage discloses outcome and debrief",
+                  "type": "Information disclosure",
+                  "description": "A leaked token lets a third party fetch debrief content and the recorded outcome for that assignment.",
+                  "mitigation": "Withhold indicators until debrief; client-denied assignment collection; short campaign windows.",
+                  "modelType": "STRIDE",
+                  "id": "9fea300a-8458-4235-aeda-7abb472d3f28"
+                }
+              ],
+              "hasOpenThreats": true
+            }
+          },
+          {
+            "position": {
+              "x": 330,
+              "y": 360
+            },
+            "size": {
+              "width": 150,
+              "height": 90
+            },
+            "attrs": {
+              "text": {
+                "text": "P4 Quiz batch"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 7,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "5644132a-7015-4f44-89d4-206278579605"
+                },
+                {
+                  "group": "right",
+                  "id": "590731c1-af53-4764-9e59-4b91ad744dab"
+                },
+                {
+                  "group": "bottom",
+                  "id": "bd2d0f61-35dd-4f31-811c-fb69a179f534"
+                },
+                {
+                  "group": "left",
+                  "id": "71321567-2347-4e9c-8b28-7df63977f877"
+                }
+              ]
+            },
+            "id": "f1ff2d0f-2048-46a5-8450-1dfd96fa87b7",
+            "data": {
+              "name": "P4 Quiz batch",
+              "description": "GET /api/quiz-batch. Mixed live approved emails. Public quiz_live reads also exist.",
+              "type": "tm.Process",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Quiz batch discloses correct phishing/legit labels",
+                  "type": "Information disclosure",
+                  "description": "GET /api/quiz-batch and public quiz_live reads include isPhishing so the client can score. A learner can read the JSON and see answers.",
+                  "mitigation": "Treat the quiz as practice not a secret exam. Optional later hardening: score on the server and withhold isPhishing until after the answer.",
+                  "modelType": "STRIDE",
+                  "id": "afa62a00-1c65-4fbd-9aee-b0335621a2db"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Low",
+                  "title": "Learner tampers with self-score via API labels",
+                  "type": "Tampering",
+                  "description": "Because labels ship with the batch, quiz scores are not trustworthy as an exam result. Campaign behavioural data remains separate.",
+                  "mitigation": "Do not use quiz scores as the sole evaluation measure; keep campaign token path for behaviour.",
+                  "modelType": "STRIDE",
+                  "id": "cb99a18e-968a-4f95-860c-27e714feacdb"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Public function flooding",
+                  "type": "Denial of service",
+                  "description": "Unauthenticated /api/scenario, /api/event, and /api/quiz-batch can be flooded, stalling a live campaign or raising Blaze-plan cost.",
+                  "mitigation": "Keep campaign URLs unlisted; Cloud quotas; complete campaigns when finished. No app-level rate limit yet.",
+                  "modelType": "STRIDE",
+                  "id": "c17c38d2-cb4c-4b09-9e00-3f3f69246db4"
+                }
+              ],
+              "hasOpenThreats": true
+            }
+          },
+          {
+            "position": {
+              "x": 330,
+              "y": 500
+            },
+            "size": {
+              "width": 150,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "P5 Admin\ncallables"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 8,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "e030478e-5ab7-4bfc-a07e-97090a676a9d"
+                },
+                {
+                  "group": "right",
+                  "id": "0832e160-a318-444b-9be6-ce1f9a679d7a"
+                },
+                {
+                  "group": "bottom",
+                  "id": "d294aad6-e04d-4db8-9e35-085c25032802"
+                },
+                {
+                  "group": "left",
+                  "id": "3bf6b810-996b-4b7f-8683-dd59e1cc65e8"
+                }
+              ]
+            },
+            "id": "9e413b27-e44f-47a3-87e5-0c57c3870439",
+            "data": {
+              "name": "P5 Admin\ncallables",
+              "description": "create/approve/retire scenarios, AI drafts, create/launch/complete campaigns, get links. _require_admin.",
+              "type": "tm.Process",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Elevation via admin custom claim or Admin SDK",
+                  "type": "Elevation of privilege",
+                  "description": "The admin claim is minted by set_admin.py / service account. A leaked key or mis-granted claim exposes approve, launch, and function-accessible collections.",
+                  "mitigation": "Never commit service accounts; unique strong passwords; MFA; review Cloud Audit logs.",
+                  "modelType": "STRIDE",
+                  "id": "04530e9a-5e54-467e-91a2-737e85097566"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Unapproved or harmful scenario published",
+                  "type": "Tampering",
+                  "description": "A rogue or rushed admin could publish offensive, illegally targeted, or too-realistic copy (real staff names, live campus URLs).",
+                  "mitigation": "Drafts start as pending_review; approve_scenario required for live and quiz_live; review checklist.",
+                  "modelType": "STRIDE",
+                  "id": "d1d93e97-2371-4a82-83ae-f6d9ea74838e"
+                }
+              ],
+              "hasOpenThreats": true
+            }
+          },
+          {
+            "position": {
+              "x": 330,
+              "y": 640
+            },
+            "size": {
+              "width": 150,
+              "height": 100
+            },
+            "attrs": {
+              "text": {
+                "text": "P6 Admin\ndashboard"
+              },
+              "body": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "process",
+            "zIndex": 9,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "9b02bd87-9ff9-4c88-8ae8-40720940af98"
+                },
+                {
+                  "group": "right",
+                  "id": "1cc21a59-703e-4dc2-ada6-c24ac0e90e0e"
+                },
+                {
+                  "group": "bottom",
+                  "id": "015faf07-b69f-4a16-a7d3-77f88e91442a"
+                },
+                {
+                  "group": "left",
+                  "id": "4b4ee3d9-b42f-4f5d-b813-e8543be4178f"
+                }
+              ]
+            },
+            "id": "78a5223b-0718-4bcf-8d5a-61cca98cde62",
+            "data": {
+              "name": "P6 Admin\ndashboard",
+              "description": "Static Hosting pages. requireAdmin(). Reads aggregates, daily_stats, scenarios, campaigns only.",
+              "type": "tm.Process",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Administrator session hijack",
+                  "type": "Spoofing",
+                  "description": "Phishing or password reuse against the researcher Google/Firebase account yields dashboard access.",
+                  "mitigation": "Firebase Auth plus admin custom claim on the client and on every callable; few admin users; MFA.",
+                  "modelType": "STRIDE",
+                  "id": "6bc5efa5-1f10-4690-8d15-fef10b191cf8"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Researcher CSV export stored on an unmanaged device",
+                  "type": "Information disclosure",
+                  "description": "Aggregate exports can still re-identify people in a tiny cohort if stored unsafely.",
+                  "mitigation": "Aggregate-only dashboard; no export of tiny groups; approved institutional storage; 5-year retention per ethics.",
+                  "modelType": "STRIDE",
+                  "id": "9018f23f-a273-4335-80c9-15305590cd77"
+                }
+              ],
+              "hasOpenThreats": true
+            }
+          },
+          {
+            "position": {
+              "x": 630,
+              "y": 30
+            },
+            "size": {
+              "width": 190,
+              "height": 70
+            },
+            "attrs": {
+              "text": {
+                "text": "DS1 assignments"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 10,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "452a0548-22d9-4e09-86dc-073562b2ef12"
+                },
+                {
+                  "group": "right",
+                  "id": "250fc71a-f3eb-4c43-970b-4dd3a985c9b7"
+                },
+                {
+                  "group": "bottom",
+                  "id": "54ed019a-6ab9-4aea-bdd0-9fbb45cdc6b3"
+                },
+                {
+                  "group": "left",
+                  "id": "84f26047-9cd1-4a5c-aea5-96344ef32743"
+                }
+              ]
+            },
+            "id": "5c6e4507-a42f-4d73-9b72-ce7e38abd666",
+            "data": {
+              "name": "DS1 assignments",
+              "description": "Token, campaign, role, outcome. Client read/write denied.",
+              "type": "tm.Store",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Future Firestore rules allow client reads of events or assignments",
+                  "type": "Information disclosure",
+                  "description": "A rules edit could break the ethics promise that raw outcomes are never readable in the browser.",
+                  "mitigation": "Default deny; emulator tests before deploy; no dashboard feature that reads assignments client-side.",
+                  "modelType": "STRIDE",
+                  "id": "c85e76d5-56cf-4024-a187-7514c1f38177"
+                }
+              ],
+              "hasOpenThreats": true,
+              "isEncrypted": true,
+              "isALog": false,
+              "storesCredentials": false,
+              "isSigned": false
+            }
+          },
+          {
+            "position": {
+              "x": 630,
+              "y": 120
+            },
+            "size": {
+              "width": 190,
+              "height": 70
+            },
+            "attrs": {
+              "text": {
+                "text": "DS2 events"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 11,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "15ec125e-6c9e-47f9-973c-4263222a2081"
+                },
+                {
+                  "group": "right",
+                  "id": "77a8c351-a833-4798-8431-94db3c9c50ef"
+                },
+                {
+                  "group": "bottom",
+                  "id": "2595cf2e-af6a-4b73-a98b-72250054795c"
+                },
+                {
+                  "group": "left",
+                  "id": "9869fa3b-5a69-4486-b84a-250aa78c11e5"
+                }
+              ]
+            },
+            "id": "81c482a7-3c34-4542-9f9e-8b2260200687",
+            "data": {
+              "name": "DS2 events",
+              "description": "Raw event log (token, type, ts). Client denied.",
+              "type": "tm.Store",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Future Firestore rules allow client reads of events or assignments",
+                  "type": "Information disclosure",
+                  "description": "A rules edit could break the ethics promise that raw outcomes are never readable in the browser.",
+                  "mitigation": "Default deny; emulator tests before deploy; no dashboard feature that reads assignments client-side.",
+                  "modelType": "STRIDE",
+                  "id": "eafb829d-8225-4524-a646-97c4d38823da"
+                },
+                {
+                  "status": "Open",
+                  "severity": "Low",
+                  "title": "Weak forensic attribution of participant actions",
+                  "type": "Repudiation",
+                  "description": "Anonymised codes mean researchers cannot prove which natural person produced an outcome. Server event timestamps support study accountability only.",
+                  "mitigation": "Accepted by ethics design. Admin createdBy/approvedBy UIDs cover researcher actions in part.",
+                  "modelType": "STRIDE",
+                  "id": "ccd6f77b-d8b1-4eaa-88ab-0259afecaf47"
+                }
+              ],
+              "hasOpenThreats": true,
+              "isALog": true,
+              "isEncrypted": true,
+              "storesCredentials": false,
+              "isSigned": false
+            }
+          },
+          {
+            "position": {
+              "x": 630,
+              "y": 210
+            },
+            "size": {
+              "width": 190,
+              "height": 70
+            },
+            "attrs": {
+              "text": {
+                "text": "DS3 participant_codes"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 12,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "f5496c2b-e5b1-4b82-b0df-23ef8c9e9973"
+                },
+                {
+                  "group": "right",
+                  "id": "a07bc22f-773a-4c2d-9863-0e7e7c030aa0"
+                },
+                {
+                  "group": "bottom",
+                  "id": "f2ae86a0-3f77-48a2-a107-3a8de45aa601"
+                },
+                {
+                  "group": "left",
+                  "id": "a31ff258-9d81-4da3-acc6-6057d69525f7"
+                }
+              ]
+            },
+            "id": "fa2e9111-58b6-48ac-a46a-608624352fc5",
+            "data": {
+              "name": "DS3 participant_codes",
+              "description": "Anonymised codes. Identity map kept outside this system. Client denied.",
+              "type": "tm.Store",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Future Firestore rules allow client reads of events or assignments",
+                  "type": "Information disclosure",
+                  "description": "A rules edit could break the ethics promise that raw outcomes are never readable in the browser.",
+                  "mitigation": "Default deny; emulator tests before deploy; no dashboard feature that reads assignments client-side.",
+                  "modelType": "STRIDE",
+                  "id": "f9c9a350-146c-4717-9522-73ef773f29c9"
+                }
+              ],
+              "hasOpenThreats": true,
+              "isEncrypted": true,
+              "isALog": false,
+              "storesCredentials": false,
+              "isSigned": false
+            }
+          },
+          {
+            "position": {
+              "x": 630,
+              "y": 300
+            },
+            "size": {
+              "width": 190,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "DS4 aggregates /\ndaily_stats"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 13,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "81c7145b-dd91-4541-9790-3f181cc50aff"
+                },
+                {
+                  "group": "right",
+                  "id": "5cfafd23-c373-428d-a8e7-6e70d7b6f22b"
+                },
+                {
+                  "group": "bottom",
+                  "id": "b0122ff2-30ad-48fb-91ed-2f3614da3da2"
+                },
+                {
+                  "group": "left",
+                  "id": "3b2b3c5a-3676-4c11-b6ef-409699b6827c"
+                }
+              ]
+            },
+            "id": "da67822e-6c6b-422c-9dd2-60e6caa30bd4",
+            "data": {
+              "name": "DS4 aggregates /\ndaily_stats",
+              "description": "Pre-aggregated counts. Admin read only. Function writes only.",
+              "type": "tm.Store",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Researcher CSV export stored on an unmanaged device",
+                  "type": "Information disclosure",
+                  "description": "Aggregate exports can still re-identify people in a tiny cohort if stored unsafely.",
+                  "mitigation": "Aggregate-only dashboard; no export of tiny groups; approved institutional storage; 5-year retention per ethics.",
+                  "modelType": "STRIDE",
+                  "id": "deb2c14a-244f-405a-b833-954d830227ab"
+                }
+              ],
+              "hasOpenThreats": true,
+              "isEncrypted": true,
+              "isALog": false,
+              "storesCredentials": false,
+              "isSigned": false
+            }
+          },
+          {
+            "position": {
+              "x": 630,
+              "y": 400
+            },
+            "size": {
+              "width": 190,
+              "height": 70
+            },
+            "attrs": {
+              "text": {
+                "text": "DS5 scenarios"
+              },
+              "topLine": {
+                "stroke": "#333333",
+                "strokeWidth": 1,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "#333333",
+                "strokeWidth": 1,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 14,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "bb2ba7dd-59f7-4c93-ba9d-6b96fcaf3923"
+                },
+                {
+                  "group": "right",
+                  "id": "0d26eeb1-7d92-49ae-b7b7-0cc834378d86"
+                },
+                {
+                  "group": "bottom",
+                  "id": "084a3aa9-aa90-4675-8374-53591082c78e"
+                },
+                {
+                  "group": "left",
+                  "id": "0368a42a-8e98-48c0-84de-80bcb85c1c76"
+                }
+              ]
+            },
+            "id": "afaddb15-04f8-4412-ad68-5e623d4bbbb7",
+            "data": {
+              "name": "DS5 scenarios",
+              "description": "Library including pending_review. Admin read; create must start pending_review.",
+              "type": "tm.Store",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Unapproved or harmful scenario published",
+                  "type": "Tampering",
+                  "description": "A rogue or rushed admin could publish offensive, illegally targeted, or too-realistic copy (real staff names, live campus URLs).",
+                  "mitigation": "Drafts start as pending_review; approve_scenario required for live and quiz_live; review checklist.",
+                  "modelType": "STRIDE",
+                  "id": "bd10d2cf-0b48-4674-8186-f27815b1dd85"
+                }
+              ],
+              "hasOpenThreats": false,
+              "isEncrypted": true,
+              "isALog": false,
+              "storesCredentials": false,
+              "isSigned": false
+            }
+          },
+          {
+            "position": {
+              "x": 630,
+              "y": 490
+            },
+            "size": {
+              "width": 190,
+              "height": 70
+            },
+            "attrs": {
+              "text": {
+                "text": "DS6 quiz_live"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 15,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "ab15d276-e7f2-4a99-8f62-093563394be1"
+                },
+                {
+                  "group": "right",
+                  "id": "2190e241-6192-4fea-88e6-5e68a7bdc941"
+                },
+                {
+                  "group": "bottom",
+                  "id": "7a1aab1e-a7a1-4b57-ae5f-f6cd8ac4f951"
+                },
+                {
+                  "group": "left",
+                  "id": "ca94b0cd-a849-4e9d-b6bc-7030b9d63945"
+                }
+              ]
+            },
+            "id": "812e8b88-cb53-4939-a5e4-c3845c1e4b21",
+            "data": {
+              "name": "DS6 quiz_live",
+              "description": "Human-approved quiz emails. Public read, admin write.",
+              "type": "tm.Store",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Quiz batch discloses correct phishing/legit labels",
+                  "type": "Information disclosure",
+                  "description": "GET /api/quiz-batch and public quiz_live reads include isPhishing so the client can score. A learner can read the JSON and see answers.",
+                  "mitigation": "Treat the quiz as practice not a secret exam. Optional later hardening: score on the server and withhold isPhishing until after the answer.",
+                  "modelType": "STRIDE",
+                  "id": "a0033b12-df11-419c-9e17-57ba85f07ecc"
+                }
+              ],
+              "hasOpenThreats": true,
+              "isEncrypted": true,
+              "isALog": false,
+              "storesCredentials": false,
+              "isSigned": false
+            }
+          },
+          {
+            "position": {
+              "x": 630,
+              "y": 580
+            },
+            "size": {
+              "width": 190,
+              "height": 80
+            },
+            "attrs": {
+              "text": {
+                "text": "DS7 Firebase Auth\n+ admin claims"
+              },
+              "topLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "red",
+                "strokeWidth": 2.5,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 16,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "111cf4c5-f4d7-4bb8-a924-d69a6585bdfa"
+                },
+                {
+                  "group": "right",
+                  "id": "174bf9da-fc9c-480b-9f1a-37d60dff7140"
+                },
+                {
+                  "group": "bottom",
+                  "id": "d4ce3f35-cada-4aee-a8d0-5e7383e742e4"
+                },
+                {
+                  "group": "left",
+                  "id": "efb93bb2-ed70-4aae-8b24-4d4948c72f2f"
+                }
+              ]
+            },
+            "id": "d2aa8b74-ea38-46f0-9abb-f9b86afbdf05",
+            "data": {
+              "name": "DS7 Firebase Auth\n+ admin claims",
+              "description": "User accounts and custom claims. Claims are not stored as Firestore role documents.",
+              "type": "tm.Store",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Elevation via admin custom claim or Admin SDK",
+                  "type": "Elevation of privilege",
+                  "description": "The admin claim is minted by set_admin.py / service account. A leaked key or mis-granted claim exposes approve, launch, and function-accessible collections.",
+                  "mitigation": "Never commit service accounts; unique strong passwords; MFA; review Cloud Audit logs.",
+                  "modelType": "STRIDE",
+                  "id": "3403ddb3-61db-4228-bb4d-7b0c970af17b"
+                }
+              ],
+              "hasOpenThreats": true,
+              "storesCredentials": true,
+              "isEncrypted": true,
+              "isALog": false,
+              "isSigned": false
+            }
+          },
+          {
+            "position": {
+              "x": 630,
+              "y": 690
+            },
+            "size": {
+              "width": 190,
+              "height": 70
+            },
+            "attrs": {
+              "text": {
+                "text": "DS8 campaigns"
+              },
+              "topLine": {
+                "stroke": "#333333",
+                "strokeWidth": 1,
+                "strokeDasharray": null
+              },
+              "bottomLine": {
+                "stroke": "#333333",
+                "strokeWidth": 1,
+                "strokeDasharray": null
+              }
+            },
+            "visible": true,
+            "shape": "store",
+            "zIndex": 17,
+            "ports": {
+              "groups": {
+                "top": {
+                  "position": "top",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "right": {
+                  "position": "right",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "bottom": {
+                  "position": "bottom",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                },
+                "left": {
+                  "position": "left",
+                  "attrs": {
+                    "circle": {
+                      "r": 4,
+                      "magnet": true,
+                      "stroke": "#5F95FF",
+                      "strokeWidth": 1,
+                      "fill": "#fff",
+                      "style": {
+                        "visibility": "hidden"
+                      }
+                    }
+                  }
+                }
+              },
+              "items": [
+                {
+                  "group": "top",
+                  "id": "828b1a78-c1da-455c-895d-07430e2ca92d"
+                },
+                {
+                  "group": "right",
+                  "id": "16364d36-384f-4107-88b2-bb56fd698e4f"
+                },
+                {
+                  "group": "bottom",
+                  "id": "25dff443-66f5-4fcd-a8cd-4d32b708d091"
+                },
+                {
+                  "group": "left",
+                  "id": "c2c90016-3ea3-49c5-bf31-2d6f608e79fa"
+                }
+              ]
+            },
+            "id": "307b0107-758a-4831-a16c-755233517965",
+            "data": {
+              "name": "DS8 campaigns",
+              "description": "Campaign metadata and counts. Admin read; writes via functions.",
+              "type": "tm.Store",
+              "isTrustBoundary": false,
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "threats": [],
+              "hasOpenThreats": false,
+              "isEncrypted": true,
+              "isALog": false,
+              "storesCredentials": false,
+              "isSigned": false
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 20,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Open scenario ?t=",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Open scenario ?t=",
+              "description": "Crosses TB4 and TB1.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Stolen assignment token used as participant",
+                  "type": "Spoofing",
+                  "description": "Anyone who obtains a campaign link can open the scenario and record events. The token is the participant identity; there is no login on this path.",
+                  "mitigation": "UUID tokens; distribute links only on the ethics-approved channel; complete campaigns promptly; treat link lists like credentials.",
+                  "modelType": "STRIDE",
+                  "id": "ef92ba3a-7e7a-47ba-a110-4493039286d3"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Cleartext interception of study traffic",
+                  "type": "Information disclosure",
+                  "description": "Participant and admin traffic crosses the public internet.",
+                  "mitigation": "Firebase Hosting enforces HTTPS; HSTS, X-Frame-Options DENY, nosniff, no-referrer in firebase.json.",
+                  "modelType": "STRIDE",
+                  "id": "a68a2b03-318c-44cc-a77a-0c3d6648d1ef"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "b95eb0b9-5213-49c5-887a-660f56632b69",
+            "source": {
+              "cell": "7e71fb12-6378-498e-8b96-f47a60dabccf"
+            },
+            "target": {
+              "cell": "8660471f-8712-4acd-92e2-9caadbf0be12"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 21,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "POST event",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "POST event",
+              "description": "clicked / submitted / reported. No password body.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Unauthenticated POST /api/event with a leaked token",
+                  "type": "Tampering",
+                  "description": "A token holder can send clicked, submitted, or reported and distort study integrity. Outcome ranking limits some replay, but does not stop a valid token from choosing an action.",
+                  "mitigation": "Ranked outcomes; closed campaigns stop recording; no client writes to aggregates. Review aggregate anomalies; do not treat results as an invigilated exam.",
+                  "modelType": "STRIDE",
+                  "id": "5c484375-f18a-4186-b8a1-038bc879682e"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Fake login captures real passwords",
+                  "type": "Information disclosure",
+                  "description": "A participant may type a real campus password into the simulated portal.",
+                  "mitigation": "Browser discards typed values; server records only that a submission occurred; isolated from Eduvos IdP.",
+                  "modelType": "STRIDE",
+                  "id": "9d527a60-8a81-495a-b96b-463e171d0a4a"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "0a6565d2-d891-4bcb-8f15-fd404a9e24af",
+            "source": {
+              "cell": "7e71fb12-6378-498e-8b96-f47a60dabccf"
+            },
+            "target": {
+              "cell": "5eae2856-aa5b-4c06-a22b-553574975e72"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 22,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Load debrief",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Load debrief",
+              "description": "Indicators after response.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Token leakage discloses outcome and debrief",
+                  "type": "Information disclosure",
+                  "description": "A leaked token lets a third party fetch debrief content and the recorded outcome for that assignment.",
+                  "mitigation": "Withhold indicators until debrief; client-denied assignment collection; short campaign windows.",
+                  "modelType": "STRIDE",
+                  "id": "dfa2f266-f705-4893-8aa4-404a8d00c3f7"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "332187a0-db31-48b2-a963-b2897d7a458f",
+            "source": {
+              "cell": "7e71fb12-6378-498e-8b96-f47a60dabccf"
+            },
+            "target": {
+              "cell": "f7e61ba0-7cd2-4aa2-8e0f-0d1d80c262aa"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 23,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Start quiz",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Start quiz",
+              "description": "Public; labels included in JSON.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Quiz batch discloses correct phishing/legit labels",
+                  "type": "Information disclosure",
+                  "description": "GET /api/quiz-batch and public quiz_live reads include isPhishing so the client can score. A learner can read the JSON and see answers.",
+                  "mitigation": "Treat the quiz as practice not a secret exam. Optional later hardening: score on the server and withhold isPhishing until after the answer.",
+                  "modelType": "STRIDE",
+                  "id": "45deee28-3e99-4678-87fe-00ce5719b905"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "119be0ec-f161-41ea-98c0-be954056f6b2",
+            "source": {
+              "cell": "7e71fb12-6378-498e-8b96-f47a60dabccf"
+            },
+            "target": {
+              "cell": "f1ff2d0f-2048-46a5-8450-1dfd96fa87b7"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 24,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Email HTML only",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Email HTML only",
+              "description": "Lookup assignment; may mark opened.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "d507b426-180d-41ff-acf2-d9e5f9df8a78",
+            "source": {
+              "cell": "8660471f-8712-4acd-92e2-9caadbf0be12"
+            },
+            "target": {
+              "cell": "5c6e4507-a42f-4d73-9b72-ce7e38abd666"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 25,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Read scenario body",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Read scenario body",
+              "description": "Withhold indicators.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "2c8efbf3-bdc8-4c0c-996a-928b8a84fe9a",
+            "source": {
+              "cell": "8660471f-8712-4acd-92e2-9caadbf0be12"
+            },
+            "target": {
+              "cell": "afaddb15-04f8-4412-ad68-5e623d4bbbb7"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 26,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Update outcome +\nraw event",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Update outcome +\nraw event",
+              "description": "Transactional rank + event doc.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "d6cadc08-7894-469e-9486-14a3dbc51da8",
+            "source": {
+              "cell": "5eae2856-aa5b-4c06-a22b-553574975e72"
+            },
+            "target": {
+              "cell": "81c482a7-3c34-4542-9f9e-8b2260200687"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 27,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Increment aggregates",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Increment aggregates",
+              "description": "Function-only writes.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "504a2824-eb9c-4f34-a356-52f570b86d05",
+            "source": {
+              "cell": "5eae2856-aa5b-4c06-a22b-553574975e72"
+            },
+            "target": {
+              "cell": "da67822e-6c6b-422c-9dd2-60e6caa30bd4"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 28,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Outcome + indicators",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Outcome + indicators",
+              "description": "Debrief payload.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "2f48f7ae-c9c1-4b18-b17d-aecdd0f60309",
+            "source": {
+              "cell": "f7e61ba0-7cd2-4aa2-8e0f-0d1d80c262aa"
+            },
+            "target": {
+              "cell": "afaddb15-04f8-4412-ad68-5e623d4bbbb7"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 29,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Approved quiz items",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Approved quiz items",
+              "description": "World-readable collection / function query.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK / rules",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "058c51d5-b720-4000-9054-ab3327ee7c11",
+            "source": {
+              "cell": "f1ff2d0f-2048-46a5-8450-1dfd96fa87b7"
+            },
+            "target": {
+              "cell": "812e8b88-cb53-4939-a5e4-c3845c1e4b21"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 30,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Sign-in / claim",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Sign-in / claim",
+              "description": "Firebase Auth. Crosses TB4 and TB2.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Administrator session hijack",
+                  "type": "Spoofing",
+                  "description": "Phishing or password reuse against the researcher Google/Firebase account yields dashboard access.",
+                  "mitigation": "Firebase Auth plus admin custom claim on the client and on every callable; few admin users; MFA.",
+                  "modelType": "STRIDE",
+                  "id": "45d9b695-1d85-45bf-a307-03417f8f567d"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "5e58b5cc-a89d-458e-b2f8-89eb699b7d35",
+            "source": {
+              "cell": "cca5b9af-eb24-4e74-bac1-12686635ca35"
+            },
+            "target": {
+              "cell": "d2aa8b74-ea38-46f0-9abb-f9b86afbdf05"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 31,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Author / approve /\nlaunch",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Author / approve /\nlaunch",
+              "description": "HTTPS callables.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Elevation via admin custom claim or Admin SDK",
+                  "type": "Elevation of privilege",
+                  "description": "The admin claim is minted by set_admin.py / service account. A leaked key or mis-granted claim exposes approve, launch, and function-accessible collections.",
+                  "mitigation": "Never commit service accounts; unique strong passwords; MFA; review Cloud Audit logs.",
+                  "modelType": "STRIDE",
+                  "id": "ff9c1ecb-6eb8-444d-b853-7ec68fb04e2d"
+                },
+                {
+                  "status": "Mitigated",
+                  "severity": "High",
+                  "title": "Unapproved or harmful scenario published",
+                  "type": "Tampering",
+                  "description": "A rogue or rushed admin could publish offensive, illegally targeted, or too-realistic copy (real staff names, live campus URLs).",
+                  "mitigation": "Drafts start as pending_review; approve_scenario required for live and quiz_live; review checklist.",
+                  "modelType": "STRIDE",
+                  "id": "26baf5eb-08fe-4595-8eee-f2bb56d15dc5"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "f23653d0-4a28-4edf-b08a-e438bcccdfc7",
+            "source": {
+              "cell": "cca5b9af-eb24-4e74-bac1-12686635ca35"
+            },
+            "target": {
+              "cell": "9e413b27-e44f-47a3-87e5-0c57c3870439"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 32,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Dashboard reads",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Dashboard reads",
+              "description": "Client SDK limited by Firestore rules.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": true,
+              "protocol": "HTTPS",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "Medium",
+                  "title": "Researcher CSV export stored on an unmanaged device",
+                  "type": "Information disclosure",
+                  "description": "Aggregate exports can still re-identify people in a tiny cohort if stored unsafely.",
+                  "mitigation": "Aggregate-only dashboard; no export of tiny groups; approved institutional storage; 5-year retention per ethics.",
+                  "modelType": "STRIDE",
+                  "id": "1e5ee766-60f2-46cf-919d-b5fed026cf4c"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "23fd3c5b-d27c-4118-ab08-58d06be64bda",
+            "source": {
+              "cell": "cca5b9af-eb24-4e74-bac1-12686635ca35"
+            },
+            "target": {
+              "cell": "78a5223b-0718-4bcf-8d5a-61cca98cde62"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 33,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Write scenarios /\nassignments /\ncodes",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Write scenarios /\nassignments /\ncodes",
+              "description": "pending_review then approve copies to quiz_live.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "9c2cd22a-c128-4855-8918-202c954a10f7",
+            "source": {
+              "cell": "9e413b27-e44f-47a3-87e5-0c57c3870439"
+            },
+            "target": {
+              "cell": "afaddb15-04f8-4412-ad68-5e623d4bbbb7"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "red",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 34,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Launch tokens",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Launch tokens",
+              "description": "UUID assignment tokens.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": true,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [
+                {
+                  "status": "Open",
+                  "severity": "High",
+                  "title": "Stolen assignment token used as participant",
+                  "type": "Spoofing",
+                  "description": "Anyone who obtains a campaign link can open the scenario and record events. The token is the participant identity; there is no login on this path.",
+                  "mitigation": "UUID tokens; distribute links only on the ethics-approved channel; complete campaigns promptly; treat link lists like credentials.",
+                  "modelType": "STRIDE",
+                  "id": "42b96cb1-804b-4842-832e-17f2bd1a63a2"
+                }
+              ],
+              "isTrustBoundary": false
+            },
+            "id": "de7ca106-a7a7-4b82-aa0e-c8f63f032514",
+            "source": {
+              "cell": "9e413b27-e44f-47a3-87e5-0c57c3870439"
+            },
+            "target": {
+              "cell": "5c6e4507-a42f-4d73-9b72-ce7e38abd666"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 35,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Campaign docs",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Campaign docs",
+              "description": "Draft / running / complete.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "ba9c6641-1f9f-446f-a41e-016153e94945",
+            "source": {
+              "cell": "9e413b27-e44f-47a3-87e5-0c57c3870439"
+            },
+            "target": {
+              "cell": "307b0107-758a-4831-a16c-755233517965"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 36,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Codes registry",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Codes registry",
+              "description": "Anonymised codes only.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Admin SDK",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "06c50acf-085c-40b0-b31f-7ddc4e338100",
+            "source": {
+              "cell": "9e413b27-e44f-47a3-87e5-0c57c3870439"
+            },
+            "target": {
+              "cell": "fa2e9111-58b6-48ac-a46a-608624352fc5"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 37,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Read aggregates",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Read aggregates",
+              "description": "No raw events.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Firestore rules",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "78d5b767-4d6f-494c-aac5-4b27c8132d57",
+            "source": {
+              "cell": "78a5223b-0718-4bcf-8d5a-61cca98cde62"
+            },
+            "target": {
+              "cell": "da67822e-6c6b-422c-9dd2-60e6caa30bd4"
+            }
+          },
+          {
+            "shape": "flow",
+            "attrs": {
+              "line": {
+                "stroke": "#333333",
+                "targetMarker": {
+                  "name": "block"
+                },
+                "strokeDasharray": null
+              }
+            },
+            "width": 200,
+            "height": 100,
+            "zIndex": 38,
+            "labels": [
+              {
+                "markup": [
+                  {
+                    "tagName": "ellipse",
+                    "selector": "labelBody"
+                  },
+                  {
+                    "tagName": "text",
+                    "selector": "labelText"
+                  }
+                ],
+                "attrs": {
+                  "labelText": {
+                    "text": "Read campaigns",
+                    "textAnchor": "middle",
+                    "textVerticalAnchor": "middle"
+                  },
+                  "labelBody": {
+                    "ref": "labelText",
+                    "refRx": "50%",
+                    "refRy": "60%",
+                    "fill": "#fff",
+                    "strokeWidth": 0
+                  }
+                },
+                "position": 0.5
+              }
+            ],
+            "connector": "smooth",
+            "data": {
+              "type": "tm.Flow",
+              "name": "Read campaigns",
+              "description": "Metadata and counts.",
+              "outOfScope": false,
+              "reasonOutOfScope": "",
+              "hasOpenThreats": false,
+              "isBidirectional": false,
+              "isEncrypted": true,
+              "isPublicNetwork": false,
+              "protocol": "Firestore rules",
+              "threats": [],
+              "isTrustBoundary": false
+            },
+            "id": "a34e384b-a27c-43fa-8bce-5db4b7ced98e",
+            "source": {
+              "cell": "78a5223b-0718-4bcf-8d5a-61cca98cde62"
+            },
+            "target": {
+              "cell": "307b0107-758a-4831-a16c-755233517965"
+            }
+          }
+        ]
+      }
+    ],
+    "diagramTop": 2,
+    "reviewer": "",
+    "threatTop": 40
+  }
+}

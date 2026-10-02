@@ -23,6 +23,26 @@
     @apply h-5 w-5 shrink-0;
   }
 
+  .user-trigger {
+    @apply flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left transition hover:bg-white/5;
+  }
+  .user-trigger .user-chevron {
+    @apply flex h-4 w-4 shrink-0 text-slate-400 transition-transform;
+    transform: rotate(180deg);
+  }
+  .user-trigger .user-chevron svg {
+    @apply h-4 w-4;
+  }
+  .user-trigger[aria-expanded="true"] .user-chevron {
+    transform: rotate(0deg);
+  }
+  .user-menu-item {
+    @apply flex w-full items-center gap-2.5 px-3 py-2 text-left text-sm font-medium text-slate-200 transition hover:bg-white/10 hover:text-white;
+  }
+  .user-menu-item svg {
+    @apply h-4 w-4 shrink-0;
+  }
+
   /* Cards */
   .card {
     @apply rounded-xl border border-slate-200 bg-white shadow-card;
