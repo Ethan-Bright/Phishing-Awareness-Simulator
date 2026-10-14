@@ -16,15 +16,32 @@ service cloud.firestore {
       return request.auth != null && request.auth.token.admin == true;
     }
 
-    // Aggregated rollups. No individual data lives here. Admin read-only.
+    // Participant accounts are issued by an admin script (custom claim).
+    // Participants never get write access to anything.
+    function isParticipant() {
+      return request.auth != null && request.auth.token.participant == true;
+    }
+
+    // Aggregated rollups. No individual data lives here. Admins see all;
+    // participants only see completed campaigns, so running simulations
+    // are not spoiled by their names showing up in the portal.
     match /aggregates/{doc} {
-      allow read: if isAdmin();
+      allow read: if isAdmin()
+        || (isParticipant() && resource.data.status == "completed");
       allow write: if false; // functions only
     }
 
     match /daily_stats/{doc} {
-      allow read: if isAdmin();
+      allow read: if isAdmin() || isParticipant();
       allow write: if false;
+    }
+
+    // A participant's own campaign links. Holds the token and campaign label
+    // only, never the outcome. Readable solely by the matching code.
+    match /participant_links/{doc} {
+      allow read: if isAdmin()
+        || (isParticipant() && resource.data.code == request.auth.token.code);
+      allow write: if false; // functions / admin scripts only
     }
 
     // Scenario library + campaign metadata (counts only, no responses).
@@ -39,7 +56,8 @@ service cloud.firestore {
     }
 
     // Human-approved quiz emails only. Public read so learners can take the
-    // quiz without signing in. Writes are admin-only; drafts never land here.
+    // quiz without signing in (and participants from the portal). Writes are
+    // admin-only; drafts never land here.
     match /quiz_live/{doc} {
       allow read: if true;
       allow create, update, delete: if isAdmin();

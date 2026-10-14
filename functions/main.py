@@ -455,6 +455,15 @@ def launch_campaign(req: https_fn.CallableRequest):
             "outcome": "pending",
             "createdAt": firestore.SERVER_TIMESTAMP,
         })
+        # Portal view for a signed-in participant with this code. No outcome.
+        batch.set(db.collection("participant_links").document(f"{code}_{cid}"), {
+            "code": code,
+            "campaignId": cid,
+            "campaignName": c["name"],
+            "token": token,
+            "status": "running",
+            "createdAt": firestore.SERVER_TIMESTAMP,
+        })
     batch.commit()
 
     db.collection("aggregates").document(cid).set({
@@ -505,6 +514,8 @@ def complete_campaign(req: https_fn.CallableRequest):
             opened_moved += 1
         moved += 1
         batch.update(doc.reference, {"outcome": "ignored"})
+    for link in db.collection("participant_links").where("campaignId", "==", cid).stream():
+        batch.update(link.reference, {"status": "completed"})
     batch.commit()
 
     agg_ref = db.collection("aggregates").document(cid)

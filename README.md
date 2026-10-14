@@ -14,7 +14,8 @@ Firebase Hosting only serves static files, so the app is split:
 - **Backend**: Python Cloud Functions (`functions/`) for scenario delivery,
   outcome capture, aggregation, scenario authoring/review, and campaign actions.
 - **Data**: Firestore. Security rules enforce the aggregate-only promise.
-- **Auth**: Firebase Auth, admin-only via a custom claim.
+- **Auth**: Firebase Auth. Admins and participants are separated by custom
+  claims (`admin`, or `participant` + `role` + `code`), issued only by scripts.
 
 Python can't run in the browser, so the dashboard is JS/Tailwind. Python does the
 work that matters for the ethics constraints: capturing outcomes, discarding
@@ -50,7 +51,8 @@ public/                Static frontend (Firebase Hosting)
   groups.html          Role-based delivery groups
   reports.html         Aggregate trends + CSV export
   settings.html        Governance summary
-  login.html           Admin sign in
+  login.html           Sign in (routes admins and participants by claim)
+  portal*.html         Participant portal: campaign links, quizzes, learning, company stats
   s.html               Participant-facing scenario (email + fake login)
   debrief.html         Post-response debrief
   js/                  ES module frontend logic
@@ -103,7 +105,40 @@ python scripts/seed.py --project YOUR_PROJECT_ID
 python scripts/seed.py --project YOUR_PROJECT_ID --no-demo
 ```
 
-### 6. Deploy
+### 6. Participant logins
+
+Participants can't sign up. An admin issues each login with a role and the
+anonymised code used in campaigns:
+
+```bash
+python scripts/set_participant.py student@eduvos.example --role student --code STU-0001 --password "TempPass123!"
+```
+
+For testing the portal, create fake participants (and a running demo campaign
+per role with working links):
+
+```bash
+python scripts/seed_participants.py      # password for all: Participant123!
+python scripts/seed_participants.py --remove
+```
+
+| Email | Role | Code |
+| --- | --- | --- |
+| student1@eduvos.example | Student | STU-DEMO01 |
+| student2@eduvos.example | Student | STU-DEMO02 |
+| lecturer1@eduvos.example | Lecturer | LEC-DEMO01 |
+| staff1@eduvos.example | Staff | STA-DEMO01 |
+
+Participants see only their own campaign links (never their outcome), approved
+quizzes, learning materials, and company stats from **completed** campaigns.
+Roles with fewer than 5 people are hidden from those stats. Admin pages
+redirect participants to the portal, and Firestore rules plus Cloud Functions
+reject any admin action from a participant token.
+
+Also turn off self sign-up: Firebase console &#8594; Authentication &#8594;
+Settings &#8594; User actions &#8594; untick **Enable create (sign-up)**.
+
+### 7. Deploy
 
 ```bash
 npm run build:css

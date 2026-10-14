@@ -8,6 +8,19 @@ const root = document.getElementById("root");
 const PHISH_COUNT = 5;
 const LEGIT_COUNT = 4;
 
+// ?mode=all runs every approved email (optionally ?difficulty=easy|medium|hard).
+// ?from=portal adds a link back to the participant portal.
+const params = new URLSearchParams(location.search);
+const MODE_ALL = params.get("mode") === "all";
+const DIFFICULTY = ["easy", "medium", "hard"].includes(params.get("difficulty")) ? params.get("difficulty") : null;
+const FROM_PORTAL = params.get("from") === "portal";
+
+function backLink() {
+  return FROM_PORTAL
+    ? `<a href="/portal-quizzes.html" class="mt-4 block text-center text-sm font-medium text-brand-600 hover:text-brand-700">Back to the portal</a>`
+    : "";
+}
+
 let batch = [];
 let index = 0;
 let answers = []; // { item, saidPhishing, correct }
@@ -30,7 +43,7 @@ function intro(notice) {
       </div>
       ${notice ? `<p class="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">${escapeHtml(notice)}</p>` : ""}
       <p class="mb-3 text-sm text-slate-600">
-        You will go through <strong>${PHISH_COUNT + LEGIT_COUNT} emails</strong>, one at a time.
+        You will go through <strong>${MODE_ALL ? `every approved${DIFFICULTY ? ` ${DIFFICULTY}` : ""} email` : `${PHISH_COUNT + LEGIT_COUNT} emails`}</strong>, one at a time.
         Some are phishing. Some are real, everyday messages. For each one, decide:
         would you <strong>report it</strong> or <strong>trust it</strong>?
       </p>
@@ -41,15 +54,33 @@ function intro(notice) {
       </ul>
       <button id="start" class="btn-primary w-full">Start the quiz</button>
       <p class="mt-4 text-center text-xs text-slate-400">Training exercise. Only human-approved emails are used. No emails shown here are real messages.</p>
+      ${backLink()}
     </div>
   </div>`;
   document.getElementById("start").addEventListener("click", startQuiz);
+}
+
+async function startAll() {
+  const live = await loadApprovedPool();
+  const items = DIFFICULTY ? live.filter((i) => (i.difficulty || "medium") === DIFFICULTY) : live;
+  if (!items.length) {
+    intro(`There are no approved${DIFFICULTY ? ` ${DIFFICULTY}` : ""} quiz emails yet. Check back later.`);
+    return;
+  }
+  batch = shuffle(items);
+  index = 0;
+  answers = [];
+  question();
 }
 
 async function startQuiz() {
   const btn = document.getElementById("start");
   btn.disabled = true;
   btn.textContent = "Loading emails...";
+  if (MODE_ALL) {
+    try { await startAll(); } catch (_) { intro("Could not load the quiz. Check that the app is running and try again."); }
+    return;
+  }
   try {
     let next = null;
     try {
@@ -276,11 +307,12 @@ function results() {
         <button type="submit" id="chat-send" class="btn-primary px-4">Send</button>
       </form>
     </div>
-    <button id="retry" class="btn-primary mt-4 w-full">Try another batch</button>
-    <p class="mt-4 text-center text-xs text-slate-400">A new attempt draws a fresh random mix of emails.</p>
+    <button id="retry" class="btn-primary mt-4 w-full">${MODE_ALL ? "Go again" : "Try another batch"}</button>
+    <p class="mt-4 text-center text-xs text-slate-400">${MODE_ALL ? "A new attempt shuffles the emails into a new order." : "A new attempt draws a fresh random mix of emails."}</p>
+    ${backLink()}
   </div>`;
 
-  document.getElementById("retry").addEventListener("click", intro);
+  document.getElementById("retry").addEventListener("click", () => intro());
   mountChat();
 }
 

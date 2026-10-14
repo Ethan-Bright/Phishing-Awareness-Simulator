@@ -5,7 +5,7 @@
  * writes to Firestore. Chat history for the coach stays in memory only.
  */
 
-import { firebaseConfig } from "./firebase-config.js";
+import { firebaseConfig, APP_CHECK_SITE_KEY } from "./firebase-config.js";
 
 export const GEMINI_SDK_VERSION = "12.17.1";
 export const GEMINI_MODEL = "gemini-3.7-flash";
@@ -13,13 +13,22 @@ export const GEMINI_MODEL = "gemini-3.7-flash";
 const apps = new Map();
 
 export async function getGeminiModel(appName, options = {}) {
-  const [{ initializeApp }, { getAI, getGenerativeModel, GoogleAIBackend }] = await Promise.all([
-    import(`https://www.gstatic.com/firebasejs/${GEMINI_SDK_VERSION}/firebase-app.js`),
-    import(`https://www.gstatic.com/firebasejs/${GEMINI_SDK_VERSION}/firebase-ai.js`)
+  const base = `https://www.gstatic.com/firebasejs/${GEMINI_SDK_VERSION}`;
+  const [{ initializeApp }, { getAI, getGenerativeModel, GoogleAIBackend }, appCheckSdk] = await Promise.all([
+    import(`${base}/firebase-app.js`),
+    import(`${base}/firebase-ai.js`),
+    APP_CHECK_SITE_KEY ? import(`${base}/firebase-app-check.js`) : null
   ]);
 
   if (!apps.has(appName)) {
-    apps.set(appName, initializeApp(firebaseConfig, appName));
+    const app = initializeApp(firebaseConfig, appName);
+    if (appCheckSdk) {
+      appCheckSdk.initializeAppCheck(app, {
+        provider: new appCheckSdk.ReCaptchaEnterpriseProvider(APP_CHECK_SITE_KEY),
+        isTokenAutoRefreshEnabled: true
+      });
+    }
+    apps.set(appName, app);
   }
   const ai = getAI(apps.get(appName), { backend: new GoogleAIBackend() });
   return getGenerativeModel(ai, {

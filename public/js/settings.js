@@ -59,4 +59,11 @@ page.innerHTML = `
   <p>Admin rights are controlled by a Firebase custom claim, not stored in the database. To grant access to a new researcher, run the helper script:</p>
   <pre class="mt-3 overflow-x-auto rounded-lg bg-slate-900 p-4 text-xs text-slate-100">python scripts/set_admin.py new.researcher@eduvos.example</pre>
   <p class="mt-3">The account must exist in Firebase Authentication first. The user signs out and back in for the claim to take effect.</p>
+</div>
+
+<div class="card mt-6 p-6 text-sm text-slate-600">
+  <h2 class="mb-2 text-base font-semibold text-slate-900">Issuing participant logins</h2>
+  <p>Participants (students, lecturers, staff) can't sign themselves up. An administrator issues each login with a role and the same anonymised code used in campaigns:</p>
+  <pre class="mt-3 overflow-x-auto rounded-lg bg-slate-900 p-4 text-xs text-slate-100">python scripts/set_participant.py student@eduvos.example --role student --code STU-0001 --password "TempPass123!"</pre>
+  <p class="mt-3">Participants see their own campaign links, approved quizzes, learning materials and aggregate company stats. They have no access to admin tools. Use <a href="/portal.html" class="font-medium text-brand-600 hover:text-brand-700">Participant view</a> to preview the portal.</p>
 </div>`;

@@ -2,7 +2,7 @@ import { icons } from "./icons.js";
 import { auth } from "./firebase-init.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
-const NAV = [
+const ADMIN_NAV = [
   { key: "dashboard", label: "Dashboard", href: "/index.html", icon: icons.dashboard },
   { key: "campaigns", label: "Campaigns", href: "/campaigns.html", icon: icons.campaigns },
   { key: "scenarios", label: "Scenarios", href: "/scenarios.html", icon: icons.scenarios },
@@ -13,8 +13,27 @@ const NAV = [
   { key: "settings", label: "Settings", href: "/settings.html", icon: icons.settings }
 ];
 
-function sidebarHTML(active) {
-  const items = NAV.map(
+const PARTICIPANT_NAV = [
+  { key: "portal", label: "Home", href: "/portal.html", icon: icons.dashboard },
+  { key: "portal-quizzes", label: "Quizzes", href: "/portal-quizzes.html", icon: icons.shieldCheck },
+  { key: "portal-learn", label: "Learning", href: "/portal-learn.html", icon: icons.book },
+  { key: "portal-stats", label: "Company stats", href: "/portal-stats.html", icon: icons.reports }
+];
+
+function userMenuItems(variant) {
+  if (variant === "participant") return "";
+  return `
+          <a href="/settings.html" role="menuitem" class="user-menu-item">
+            ${icons.settings}<span>Settings</span>
+          </a>
+          <a href="/portal.html" role="menuitem" class="user-menu-item">
+            ${icons.participants}<span>Participant view</span>
+          </a>`;
+}
+
+function sidebarHTML(active, variant) {
+  const nav = variant === "participant" ? PARTICIPANT_NAV : ADMIN_NAV;
+  const items = nav.map(
     (n) => `
     <a href="${n.href}" class="nav-item ${n.key === active ? "active" : ""}">
       ${n.icon}<span>${n.label}</span>
@@ -27,16 +46,14 @@ function sidebarHTML(active) {
       <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-white">${icons.shield}</div>
       <div class="leading-tight">
         <div class="text-base font-semibold">PhishSim Pro</div>
-        <div class="text-xs text-slate-400">Security Awareness</div>
+        <div class="text-xs text-slate-400">${variant === "participant" ? "Participant portal" : "Security Awareness"}</div>
       </div>
     </div>
     <nav class="mt-2 flex-1 space-y-1 px-3">${items}</nav>
     <div class="border-t border-white/10 p-3">
       <div class="relative">
         <div id="shell-user-menu" role="menu" aria-labelledby="shell-user-btn" class="absolute bottom-full left-0 right-0 z-30 mb-2 hidden overflow-hidden rounded-lg border border-white/10 bg-navy-800 py-1 shadow-lg">
-          <a href="/settings.html" role="menuitem" class="user-menu-item">
-            ${icons.settings}<span>Settings</span>
-          </a>
+          ${userMenuItems(variant)}
           <button type="button" id="shell-logout" role="menuitem" class="user-menu-item">
             ${icons.logout}<span>Sign out</span>
           </button>
@@ -69,10 +86,12 @@ function topbarHTML(title, subtitle) {
 }
 
 // Builds the full app shell into #app and returns the #page container.
-export function mountShell({ active, title, subtitle }) {
+// variant: "admin" (default) or "participant". The participant variant has no
+// admin links; access is still enforced by claims and Firestore rules.
+export function mountShell({ active, title, subtitle, variant = "admin" }) {
   const appEl = document.getElementById("app");
   appEl.innerHTML = `
-    ${sidebarHTML(active)}
+    ${sidebarHTML(active, variant)}
     <div class="ml-64 flex min-h-screen flex-1 flex-col bg-slate-50">
       ${topbarHTML(title, subtitle)}
       <main id="page" class="flex-1 px-8 py-6"></main>
@@ -83,7 +102,7 @@ export function mountShell({ active, title, subtitle }) {
 
   const user = auth.currentUser;
   if (user) {
-    const name = user.displayName || user.email?.split("@")[0] || "Admin";
+    const name = user.displayName || user.email?.split("@")[0] || (variant === "participant" ? "Participant" : "Admin");
     document.getElementById("shell-user-name").textContent = name;
     document.getElementById("shell-user-email").textContent = user.email || "";
     document.getElementById("shell-avatar").textContent = (name[0] || "A").toUpperCase();

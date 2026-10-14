@@ -10,3 +10,7 @@ export const firebaseConfig = {
 };
 
 export const FUNCTIONS_REGION = "us-central1";
+
+// reCAPTCHA Enterprise site key registered for App Check (Firebase console →
+// App Check → Apps). Leave empty to skip App Check, e.g. for local testing.
+export const APP_CHECK_SITE_KEY = "";
