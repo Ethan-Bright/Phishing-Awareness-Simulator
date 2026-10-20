@@ -1,8 +1,8 @@
 """Create fake participant logins for testing the participant portal.
 
 Creates a few demo accounts (student, lecturer, staff), one running demo
-campaign per role with working links, and one closed link so the portal shows
-both states. Safe to re-run: ids are fixed and existing tokens are reused.
+campaign per role with working links (open them from Campaigns > Links), and
+one closed link. Safe to re-run: ids are fixed and existing tokens are reused.
 
 Run scripts/seed.py first so the scenarios exist.
 

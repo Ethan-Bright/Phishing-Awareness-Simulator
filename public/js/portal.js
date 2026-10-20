@@ -1,8 +1,7 @@
 import { requireParticipant } from "./auth-guard.js";
 import { mountShell } from "./layout.js";
-import { fetchMyLinks } from "./portal-api.js";
 import { icons } from "./icons.js";
-import { ROLE_LABELS, escapeHtml, fmtDate } from "./utils.js";
+import { ROLE_LABELS, escapeHtml } from "./utils.js";
 import { adminPreviewBanner } from "./portal-common.js";
 
 const { user, claims, isAdmin } = await requireParticipant();
@@ -10,38 +9,21 @@ const page = mountShell({
   variant: "participant",
   active: "portal",
   title: "Home",
-  subtitle: "Your training activities, quizzes and learning materials."
+  subtitle: "Quizzes, learning materials and how this training works."
 });
 
 const name = user.displayName || user.email?.split("@")[0] || "there";
-const links = isAdmin ? [] : await fetchMyLinks(claims.code);
-const open = links.filter((l) => l.status === "running");
-const closed = links.filter((l) => l.status !== "running");
 
-function linkRow(l) {
-  const isOpen = l.status === "running";
-  return `
-  <li class="flex items-center justify-between gap-4 border-t border-slate-100 py-3 first:border-t-0">
-    <div class="min-w-0">
-      <div class="truncate text-sm font-medium text-slate-800">${escapeHtml(l.campaignName || "Training activity")}</div>
-      <div class="text-xs text-slate-400">Assigned ${fmtDate(l.createdAt)}</div>
-    </div>
-    ${isOpen
-      ? `<a href="/s.html?t=${encodeURIComponent(l.token)}" target="_blank" rel="noopener" class="btn-primary shrink-0 px-3 py-1.5 text-xs">${icons.link}<span>Open</span></a>`
-      : `<span class="pill pill-gray shrink-0">Closed</span>`}
-  </li>`;
-}
-
-const campaignsCard = `
+// Simulated phishing emails arrive unannounced, so the portal never lists them.
+const trainingCard = `
 <div class="card p-5">
-  <div class="mb-1 flex items-center justify-between">
-    <h2 class="text-base font-semibold text-slate-900">My campaigns</h2>
-    <span class="text-xs text-slate-400">${open.length} open</span>
-  </div>
-  <p class="mb-3 text-xs text-slate-500">Activities your organisation has assigned to you. Each link is personal, so don't share it.</p>
-  ${links.length
-    ? `<ul>${[...open, ...closed].map(linkRow).join("")}</ul>`
-    : `<p class="py-6 text-center text-sm text-slate-400">${isAdmin ? "Admin accounts have no assigned campaigns." : "Nothing assigned to you right now."}</p>`}
+  <h2 class="mb-3 text-base font-semibold text-slate-900">How this training works</h2>
+  <ul class="space-y-2 text-sm text-slate-600">
+    <li>You may receive simulated phishing emails at any time, without warning. They look like real messages.</li>
+    <li>Treat every unexpected email the way you would in real life. If it looks suspicious, report it.</li>
+    <li>If you do click one, you'll see a short explanation of the warning signs straight away. Nobody is singled out.</li>
+    <li>Results are only ever reported as group totals, never per person.</li>
+  </ul>
 </div>`;
 
 function shortcut(href, tint, icon, title, text) {
@@ -67,7 +49,7 @@ page.innerHTML = `
       </div>
     </div>
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-      <div class="lg:col-span-2">${campaignsCard}</div>
+      <div class="lg:col-span-2">${trainingCard}</div>
       <div class="card p-5">
         <h2 class="mb-3 text-base font-semibold text-slate-900">Spotted something suspicious?</h2>
         <ul class="space-y-2 text-sm text-slate-600">

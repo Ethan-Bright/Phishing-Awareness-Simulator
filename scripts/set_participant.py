@@ -5,8 +5,7 @@ Usage:
     python scripts/set_participant.py lecturer@eduvos.example --role lecturer --code LEC-0001
 
 Participant access is a Firebase custom claim: {participant, role, code}.
-The code must be the same anonymised code used in campaigns, so the portal
-can show that person their own campaign links. Setting this claim removes any
+The code must be the same anonymised code used in campaigns. Setting this claim removes any
 admin claim on the account: participants must never hold admin rights.
 The user must sign out and back in for the claim to take effect.
 """

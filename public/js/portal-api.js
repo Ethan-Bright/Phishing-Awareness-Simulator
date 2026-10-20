@@ -10,14 +10,6 @@ import {
 // Reads available to a participant. Firestore rules reject anything wider,
 // so each query must carry the same filter the rule checks.
 
-export async function fetchMyLinks(code) {
-  if (!code) return [];
-  const snap = await getDocs(query(collection(db, "participant_links"), where("code", "==", code)));
-  return snap.docs
-    .map((d) => ({ id: d.id, ...d.data() }))
-    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
-}
-
 export async function fetchCompletedAggregates() {
   const snap = await getDocs(query(collection(db, "aggregates"), where("status", "==", "completed")));
   return snap.docs.map((d) => ({ id: d.id, ...d.data() }));

@@ -36,11 +36,10 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // A participant's own campaign links. Holds the token and campaign label
-    // only, never the outcome. Readable solely by the matching code.
+    // Per-code campaign links (token + campaign label). Participants must not
+    // read these: simulated emails have to arrive unannounced.
     match /participant_links/{doc} {
-      allow read: if isAdmin()
-        || (isParticipant() && resource.data.code == request.auth.token.code);
+      allow read: if isAdmin();
       allow write: if false; // functions / admin scripts only
     }
 

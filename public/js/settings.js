@@ -65,5 +65,5 @@ page.innerHTML = `
   <h2 class="mb-2 text-base font-semibold text-slate-900">Issuing participant logins</h2>
   <p>Participants (students, lecturers, staff) can't sign themselves up. An administrator issues each login with a role and the same anonymised code used in campaigns:</p>
   <pre class="mt-3 overflow-x-auto rounded-lg bg-slate-900 p-4 text-xs text-slate-100">python scripts/set_participant.py student@eduvos.example --role student --code STU-0001 --password "TempPass123!"</pre>
-  <p class="mt-3">Participants see their own campaign links, approved quizzes, learning materials and aggregate company stats. They have no access to admin tools. Use <a href="/portal.html" class="font-medium text-brand-600 hover:text-brand-700">Participant view</a> to preview the portal.</p>
+  <p class="mt-3">Participants never see their campaign links (simulations arrive unannounced). They see approved quizzes, learning materials and aggregate company stats. They have no access to admin tools. Use <a href="/portal.html" class="font-medium text-brand-600 hover:text-brand-700">Participant view</a> to preview the portal.</p>
 </div>`;

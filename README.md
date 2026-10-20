@@ -52,7 +52,7 @@ public/                Static frontend (Firebase Hosting)
   reports.html         Aggregate trends + CSV export
   settings.html        Governance summary
   login.html           Sign in (routes admins and participants by claim)
-  portal*.html         Participant portal: campaign links, quizzes, learning, company stats
+  portal*.html         Participant portal: quizzes, learning, company stats
   s.html               Participant-facing scenario (email + fake login)
   debrief.html         Post-response debrief
   js/                  ES module frontend logic
@@ -129,8 +129,9 @@ python scripts/seed_participants.py --remove
 | lecturer1@eduvos.example | Lecturer | LEC-DEMO01 |
 | staff1@eduvos.example | Staff | STA-DEMO01 |
 
-Participants see only their own campaign links (never their outcome), approved
-quizzes, learning materials, and company stats from **completed** campaigns.
+Participants never see their campaign links or outcomes in the portal, so
+simulated emails stay a surprise. They see approved quizzes, learning
+materials, and company stats from **completed** campaigns.
 Roles with fewer than 5 people are hidden from those stats. Admin pages
 redirect participants to the portal, and Firestore rules plus Cloud Functions
 reject any admin action from a participant token.
