@@ -44,7 +44,8 @@ credential input, and keeping raw data server-side.
 
 ```
 public/                Static frontend (Firebase Hosting)
-  index.html           Dashboard
+  index.html           Public landing page
+  dashboard.html       Dashboard
   campaigns.html       Create/launch campaigns, get distribution links
   scenarios.html       Scenario library + AI drafts + human review
   participants.html    Aggregate view by role (no individual profiles)

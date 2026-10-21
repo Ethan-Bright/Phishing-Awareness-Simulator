@@ -12,7 +12,7 @@ const btn = document.getElementById("login-btn");
 
 // Admins land on the dashboard, participants on their portal.
 function homeFor(claims) {
-  if (claims.admin) return "/index.html";
+  if (claims.admin) return "/dashboard.html";
   if (claims.participant) return "/portal.html";
   return null;
 }

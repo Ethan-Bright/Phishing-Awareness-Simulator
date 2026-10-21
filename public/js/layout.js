@@ -3,7 +3,7 @@ import { auth } from "./firebase-init.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
 const ADMIN_NAV = [
-  { key: "dashboard", label: "Dashboard", href: "/index.html", icon: icons.dashboard },
+  { key: "dashboard", label: "Dashboard", href: "/dashboard.html", icon: icons.dashboard },
   { key: "campaigns", label: "Campaigns", href: "/campaigns.html", icon: icons.campaigns },
   { key: "scenarios", label: "Scenarios", href: "/scenarios.html", icon: icons.scenarios },
   { key: "participants", label: "Participants", href: "/participants.html", icon: icons.participants },
