@@ -7,23 +7,23 @@ function deny(message) {
       <div class="card max-w-md p-8 text-center">
         <h1 class="text-lg font-semibold text-slate-900">Access denied</h1>
         <p class="mt-2 text-sm text-slate-500">${message}</p>
-        <a href="/login.html" class="btn-primary mt-6">Back to sign in</a>
+        <a href="/login" class="btn-primary mt-6">Back to sign in</a>
       </div>
     </div>`;
 }
 
-// Resolves with the signed-in admin user, or redirects to /login.html.
+// Resolves with the signed-in admin user, or redirects to /login.
 // Admin access is gated by the `admin` custom claim set server-side.
 export function requireAdmin() {
   return new Promise((resolve) => {
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        location.href = "/login.html";
+        location.href = "/login";
         return;
       }
       const token = await getIdTokenResult(user, true);
       if (token.claims.participant) {
-        location.href = "/portal.html";
+        location.href = "/portal";
         return;
       }
       if (!token.claims.admin) {
@@ -43,7 +43,7 @@ export function requireParticipant() {
   return new Promise((resolve) => {
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        location.href = "/login.html";
+        location.href = "/login";
         return;
       }
       const token = await getIdTokenResult(user, true);

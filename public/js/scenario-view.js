@@ -25,7 +25,7 @@ async function recordEvent(type) {
 }
 
 function goDebrief() {
-  location.href = `/debrief.html?t=${encodeURIComponent(token)}`;
+  location.href = `/debrief?t=${encodeURIComponent(token)}`;
 }
 
 function renderEmail(s) {

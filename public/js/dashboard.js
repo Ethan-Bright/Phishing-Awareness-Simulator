@@ -69,7 +69,7 @@ const recentCampaigns = `
 <div class="card p-5">
   <div class="mb-4 flex items-center justify-between">
     <h2 class="text-base font-semibold text-slate-900">Recent Campaigns</h2>
-    <a href="/campaigns.html" class="text-sm font-medium text-brand-600 hover:text-brand-700">View all</a>
+    <a href="/campaigns" class="text-sm font-medium text-brand-600 hover:text-brand-700">View all</a>
   </div>
   <div class="overflow-x-auto">
     <table class="w-full text-sm">

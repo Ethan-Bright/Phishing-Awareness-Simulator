@@ -104,7 +104,7 @@ def seed(db, password):
     print("\nDemo participant logins (password for all: %s)" % password)
     for email, name, role, code in DEMO_USERS:
         print(f"  {email:<28} {role:<9} {code:<11} {name}")
-    print("\nSign in at /login.html. Remove with --remove before a real study.")
+    print("\nSign in at /login. Remove with --remove before a real study.")
 
 
 def remove(db):

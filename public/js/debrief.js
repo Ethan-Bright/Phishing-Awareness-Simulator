@@ -1,4 +1,5 @@
 import { escapeHtml } from "./utils.js";
+import { createScenarioCoach, chatCard, mountChat } from "./quiz-chat.js";
 
 const root = document.getElementById("root");
 const token = new URLSearchParams(location.search).get("t");
@@ -65,9 +66,22 @@ async function start() {
       <ul class="mt-4 space-y-2 text-sm text-slate-700">${tips}</ul>
     </div>` : ""}
 
+    ${chatCard({
+      intro: "Ask about this email, the warning signs, or how to handle something similar in your real inbox.",
+      placeholder: "e.g. How could I have checked the sender?"
+    })}
+
     <div class="mt-6 text-center text-xs text-slate-400">
       Your response is recorded for aggregate research statistics only. No individual profile is created.
     </div>`);
+
+  const greeting = outcome === "reported"
+    ? "Nice catch. Want to go over what gave this email away, or how to spot trickier ones?"
+    : "No stress, this was only a simulation. Ask me anything about this email or how to spot the next one.";
+  mountChat(createScenarioCoach(c, outcome), {
+    greeting,
+    fallback: "Sorry, I could not reach the coach right now. The warning signs above still cover what to look for."
+  });
 }
 
 start();

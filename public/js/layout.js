@@ -3,30 +3,30 @@ import { auth } from "./firebase-init.js";
 import { signOut } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
 
 const ADMIN_NAV = [
-  { key: "dashboard", label: "Dashboard", href: "/dashboard.html", icon: icons.dashboard },
-  { key: "campaigns", label: "Campaigns", href: "/campaigns.html", icon: icons.campaigns },
-  { key: "scenarios", label: "Scenarios", href: "/scenarios.html", icon: icons.scenarios },
-  { key: "participants", label: "Participants", href: "/participants.html", icon: icons.participants },
-  { key: "groups", label: "Groups", href: "/groups.html", icon: icons.groups },
-  { key: "reports", label: "Reports", href: "/reports.html", icon: icons.reports },
-  { key: "quiz-library", label: "Quiz library", href: "/quiz-library.html", icon: icons.shieldCheck },
-  { key: "settings", label: "Settings", href: "/settings.html", icon: icons.settings }
+  { key: "dashboard", label: "Dashboard", href: "/dashboard", icon: icons.dashboard },
+  { key: "campaigns", label: "Campaigns", href: "/campaigns", icon: icons.campaigns },
+  { key: "scenarios", label: "Scenarios", href: "/scenarios", icon: icons.scenarios },
+  { key: "participants", label: "Participants", href: "/participants", icon: icons.participants },
+  { key: "groups", label: "Groups", href: "/groups", icon: icons.groups },
+  { key: "reports", label: "Reports", href: "/reports", icon: icons.reports },
+  { key: "quiz-library", label: "Quiz library", href: "/quiz-library", icon: icons.shieldCheck },
+  { key: "settings", label: "Settings", href: "/settings", icon: icons.settings }
 ];
 
 const PARTICIPANT_NAV = [
-  { key: "portal", label: "Home", href: "/portal.html", icon: icons.dashboard },
-  { key: "portal-quizzes", label: "Quizzes", href: "/portal-quizzes.html", icon: icons.shieldCheck },
-  { key: "portal-learn", label: "Learning", href: "/portal-learn.html", icon: icons.book },
-  { key: "portal-stats", label: "Company stats", href: "/portal-stats.html", icon: icons.reports }
+  { key: "portal", label: "Home", href: "/portal", icon: icons.dashboard },
+  { key: "portal-quizzes", label: "Quizzes", href: "/portal-quizzes", icon: icons.shieldCheck },
+  { key: "portal-learn", label: "Learning", href: "/portal-learn", icon: icons.book },
+  { key: "portal-stats", label: "Company stats", href: "/portal-stats", icon: icons.reports }
 ];
 
 function userMenuItems(variant) {
   if (variant === "participant") return "";
   return `
-          <a href="/settings.html" role="menuitem" class="user-menu-item">
+          <a href="/settings" role="menuitem" class="user-menu-item">
             ${icons.settings}<span>Settings</span>
           </a>
-          <a href="/portal.html" role="menuitem" class="user-menu-item">
+          <a href="/portal" role="menuitem" class="user-menu-item">
             ${icons.participants}<span>Participant view</span>
           </a>`;
 }
@@ -133,7 +133,7 @@ export function mountShell({ active, title, subtitle, variant = "admin" }) {
 
   document.getElementById("shell-logout").addEventListener("click", async () => {
     await signOut(auth);
-    location.href = "/login.html";
+    location.href = "/login";
   });
 
   return document.getElementById("page");

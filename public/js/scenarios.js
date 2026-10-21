@@ -21,7 +21,7 @@ import {
 } from "./utils.js";
 
 await requireAdmin();
-const QUIZ_MODE = location.pathname.endsWith("/quiz-library.html");
+const QUIZ_MODE = /\/quiz-library(\.html)?$/.test(location.pathname);
 const page = mountShell({
   active: QUIZ_MODE ? "quiz-library" : "scenarios",
   title: QUIZ_MODE ? "Quiz library" : "Scenarios",
@@ -133,7 +133,7 @@ function render() {
       Learners only see emails that are <strong>live</strong> and marked for the quiz.
       Right now that is <strong>${livePhish}</strong> phishing and <strong>${liveLegit}</strong> legit
       (need 5 phishing and 4 legit). Drafts stay hidden until you approve them.
-      <a href="/quiz.html" class="ml-2 font-medium text-brand-600 hover:underline">Preview the quiz</a>
+      <a href="/quiz" class="ml-2 font-medium text-brand-600 hover:underline">Preview the quiz</a>
     </div>` : ""}
     <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
       <div class="flex gap-1 rounded-xl bg-white p-1 shadow-card">

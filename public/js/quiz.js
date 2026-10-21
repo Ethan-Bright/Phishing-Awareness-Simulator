@@ -1,5 +1,5 @@
 import { escapeHtml } from "./utils.js";
-import { createCoach } from "./quiz-chat.js";
+import { createCoach, chatCard, mountChat } from "./quiz-chat.js";
 import { db } from "./firebase-init.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
@@ -17,7 +17,7 @@ const FROM_PORTAL = params.get("from") === "portal";
 
 function backLink() {
   return FROM_PORTAL
-    ? `<a href="/portal-quizzes.html" class="mt-4 block text-center text-sm font-medium text-brand-600 hover:text-brand-700">Back to the portal</a>`
+    ? `<a href="/portal-quizzes" class="mt-4 block text-center text-sm font-medium text-brand-600 hover:text-brand-700">Back to the portal</a>`
     : "";
 }
 
@@ -291,72 +291,19 @@ function results() {
       <h2 class="mb-2 text-sm font-semibold text-slate-800">Email recap</h2>
       <ul>${answers.map(recapRow).join("")}</ul>
     </div>
-    <div class="card mt-4 p-6">
-      <div class="mb-1 flex items-center gap-2">
-        <svg viewBox="0 0 24 24" class="h-5 w-5 text-brand-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8L4 10.7l6.1 1.9L12 18.4l1.9-5.8L20 10.7l-6.1-1.9z"/></svg>
-        <h2 class="text-sm font-semibold text-slate-800">Ask the AI coach</h2>
-      </div>
-      <p class="mb-3 text-xs text-slate-500">
-        Ask anything about the emails in this batch or how to spot phishing.
-        Chats are not saved. Do not enter personal information.
-      </p>
-      <div id="chat-log" class="mb-3 max-h-80 space-y-3 overflow-y-auto"></div>
-      <form id="chat-form" class="flex gap-2">
-        <input id="chat-input" class="input flex-1" type="text" autocomplete="off" maxlength="500"
-          placeholder="e.g. Why was the NSFAS email fake?" />
-        <button type="submit" id="chat-send" class="btn-primary px-4">Send</button>
-      </form>
-    </div>
+    ${chatCard({
+      intro: "Ask anything about the emails in this batch or how to spot phishing.",
+      placeholder: "e.g. Why was the NSFAS email fake?"
+    })}
     <button id="retry" class="btn-primary mt-4 w-full">${MODE_ALL ? "Go again" : "Try another batch"}</button>
     <p class="mt-4 text-center text-xs text-slate-400">${MODE_ALL ? "A new attempt shuffles the emails into a new order." : "A new attempt draws a fresh random mix of emails."}</p>
     ${backLink()}
   </div>`;
 
   document.getElementById("retry").addEventListener("click", () => intro());
-  mountChat();
-}
-
-function mountChat() {
-  const coach = createCoach(answers);
-  const log = document.getElementById("chat-log");
-  const form = document.getElementById("chat-form");
-  const input = document.getElementById("chat-input");
-  const send = document.getElementById("chat-send");
-
-  function bubble(text, who) {
-    const wrap = document.createElement("div");
-    wrap.className = who === "user" ? "flex justify-end" : "flex justify-start";
-    wrap.innerHTML = `
-      <div class="${who === "user"
-        ? "max-w-[85%] rounded-2xl rounded-br-sm bg-brand-600 px-4 py-2 text-sm text-white"
-        : "max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-bl-sm bg-slate-100 px-4 py-2 text-sm text-slate-700"}">${escapeHtml(text)}</div>`;
-    log.appendChild(wrap);
-    log.scrollTop = log.scrollHeight;
-    return wrap;
-  }
-
-  bubble(`Nice work finishing the batch. Ask me about any email you saw, why it was phishing or legit, or how to stay safe in a real inbox.`, "coach");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text || send.disabled) return;
-    input.value = "";
-    bubble(text, "user");
-    const pending = bubble("Thinking...", "coach");
-    send.disabled = true;
-    try {
-      const reply = await coach.ask(text);
-      pending.remove();
-      bubble(reply, "coach");
-    } catch (err) {
-      console.error(err);
-      pending.remove();
-      bubble("Sorry, I could not reach the coach right now. Your results above still have all the indicators for each email.", "coach");
-    } finally {
-      send.disabled = false;
-      input.focus();
-    }
+  mountChat(createCoach(answers), {
+    greeting: "Nice work finishing the batch. Ask me about any email you saw, why it was phishing or legit, or how to stay safe in a real inbox.",
+    fallback: "Sorry, I could not reach the coach right now. Your results above still have all the indicators for each email."
   });
 }
 

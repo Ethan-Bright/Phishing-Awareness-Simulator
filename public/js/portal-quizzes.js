@@ -38,7 +38,7 @@ const cards = [
     title: "Phish or Legit? (quick batch)",
     text: "A random mix of phishing and real emails. Feedback after each one, then an AI coach to talk it through.",
     count: QUIZ_BATCH.phishing + QUIZ_BATCH.legit,
-    href: "/quiz.html?from=portal",
+    href: "/quiz?from=portal",
     ready: batchReady,
     tint: "bg-blue-50 text-blue-600",
     note: `Needs ${QUIZ_BATCH.phishing} phishing and ${QUIZ_BATCH.legit} legit approved emails (have ${phish} and ${legit}).`
@@ -47,7 +47,7 @@ const cards = [
     title: "Full practice set",
     text: "Every approved quiz email, in random order. Good for a thorough run-through.",
     count: pool.length,
-    href: "/quiz.html?mode=all&from=portal",
+    href: "/quiz?mode=all&from=portal",
     ready: pool.length > 0,
     tint: "bg-emerald-50 text-emerald-600"
   }),
@@ -59,7 +59,7 @@ const cards = [
         ? "Clear examples to warm up with."
         : "Typical everyday phishing and real notices.",
     count: byLevel(lvl),
-    href: `/quiz.html?mode=all&difficulty=${lvl}&from=portal`,
+    href: `/quiz?mode=all&difficulty=${lvl}&from=portal`,
     ready: byLevel(lvl) > 0,
     tint: lvl === "hard" ? "bg-red-50 text-red-600" : lvl === "easy" ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"
   }))

@@ -152,6 +152,9 @@ def scenario_debrief(req: https_fn.Request) -> https_fn.Response:
         "ok": True,
         "outcome": a.get("outcome", "clicked"),
         "content": {
+            "senderName": c.get("senderName"),
+            "senderEmail": c.get("senderEmail"),
+            "subject": c.get("subject"),
             "indicators": c.get("indicators", []),
             "debrief": c.get("debrief", {}),
         },

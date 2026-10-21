@@ -94,13 +94,23 @@ function newModal() {
   if (!live.length) {
     return openModal("New campaign", `<p class="text-sm text-slate-600">You need at least one <strong>live</strong> phishing scenario first. Create and approve one on the Scenarios page.</p>`);
   }
-  const opts = live.map((s) =>
-    `<option value="${s.id}">${escapeHtml(s.title)} — ${ROLE_LABELS[s.role]} / ${CATEGORY_LABELS[s.category]}</option>`).join("");
+  const firstRole = Object.keys(ROLE_LABELS).find((r) => live.some((s) => s.role === r));
+  const roleOpts = Object.entries(ROLE_LABELS).map(([value, label]) => {
+    const n = live.filter((s) => s.role === value).length;
+    return `<option value="${value}" ${value === firstRole ? "selected" : ""}>${label} (${n} live scenario${n === 1 ? "" : "s"})</option>`;
+  }).join("");
+  const scenarioOpts = (role) => {
+    const list = live.filter((s) => s.role === role);
+    if (!list.length) return `<option value="">No live scenarios for this role</option>`;
+    return list.map((s) =>
+      `<option value="${s.id}">${escapeHtml(s.title)} — ${CATEGORY_LABELS[s.category]}</option>`).join("");
+  };
 
   const m = openModal("New campaign", `
     <div class="space-y-4">
       <div><label class="label">Campaign name</label><input id="c-name" class="input" placeholder="e.g. Registration round 1 — Students" /></div>
-      <div><label class="label">Scenario (live only)</label><select id="c-scn" class="input">${opts}</select></div>
+      <div><label class="label">Target role</label><select id="c-role" class="input">${roleOpts}</select></div>
+      <div><label class="label">Scenario (live only)</label><select id="c-scn" class="input">${scenarioOpts(firstRole)}</select></div>
       <div><label class="label">Round number</label><input id="c-round" type="number" min="1" value="1" class="input" /></div>
       <div>
         <label class="label">Participant codes</label>
@@ -114,13 +124,17 @@ function newModal() {
       <button id="save" class="btn-primary">Create campaign</button>
     </div>`);
   m.body.querySelector("[data-close]").addEventListener("click", m.close);
+  const roleSel = m.body.querySelector("#c-role");
+  const scnSel = m.body.querySelector("#c-scn");
+  roleSel.addEventListener("change", () => { scnSel.innerHTML = scenarioOpts(roleSel.value); });
   m.body.querySelector("#save").addEventListener("click", async () => {
     const name = document.getElementById("c-name").value.trim();
-    const scenarioId = document.getElementById("c-scn").value;
+    const scenarioId = scnSel.value;
     const round = parseInt(document.getElementById("c-round").value, 10) || 1;
     const codes = document.getElementById("c-codes").value.split("\n").map((s) => s.trim()).filter(Boolean);
     const count = parseInt(document.getElementById("c-count").value, 10) || 0;
     if (!name) return toast("Name is required", "error");
+    if (!scenarioId) return toast("Pick a role that has a live scenario", "error");
     if (!codes.length && !count) return toast("Add participant codes or a count", "error");
     try {
       await callCreateCampaign({ name, scenarioId, round, participantCodes: codes, autoCount: count });
@@ -150,7 +164,7 @@ async function showLinks(id) {
     const items = res.data.links || [];
     const origin = location.origin;
     const rows = items.map((l) => {
-      const url = `${origin}/s.html?t=${l.token}`;
+      const url = `${origin}/s?t=${l.token}`;
       return `
       <tr class="border-t border-slate-100">
         <td class="py-2 pr-4 font-mono text-xs text-slate-700">${escapeHtml(l.code)}</td>

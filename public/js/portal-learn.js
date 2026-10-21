@@ -137,6 +137,6 @@ page.innerHTML = `
         <div class="text-sm font-semibold text-slate-900">Ready to test yourself?</div>
         <div class="text-xs text-slate-500">Put this into practice with a quiz.</div>
       </div>
-      <a href="/portal-quizzes.html" class="btn-primary">Go to quizzes</a>
+      <a href="/portal-quizzes" class="btn-primary">Go to quizzes</a>
     </div>
   </div>`;

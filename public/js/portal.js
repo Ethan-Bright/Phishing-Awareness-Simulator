@@ -61,8 +61,8 @@ page.innerHTML = `
       </div>
     </div>
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-3">
-      ${shortcut("/portal-quizzes.html", "bg-blue-50 text-blue-600", icons.shieldCheck, "Take a quiz", "Practise telling phishing from real email.")}
-      ${shortcut("/portal-learn.html", "bg-emerald-50 text-emerald-600", icons.book, "Learning materials", "Red flags, common scams and how to report.")}
-      ${shortcut("/portal-stats.html", "bg-purple-50 text-purple-600", icons.reports, "Company stats", "How the organisation is doing overall.")}
+      ${shortcut("/portal-quizzes", "bg-blue-50 text-blue-600", icons.shieldCheck, "Take a quiz", "Practise telling phishing from real email.")}
+      ${shortcut("/portal-learn", "bg-emerald-50 text-emerald-600", icons.book, "Learning materials", "Red flags, common scams and how to report.")}
+      ${shortcut("/portal-stats", "bg-purple-50 text-purple-600", icons.reports, "Company stats", "How the organisation is doing overall.")}
     </div>
   </div>`;
