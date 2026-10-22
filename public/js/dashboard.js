@@ -72,7 +72,7 @@ const recentCampaigns = `
     <a href="/campaigns" class="text-sm font-medium text-brand-600 hover:text-brand-700">View all</a>
   </div>
   <div class="overflow-x-auto">
-    <table class="w-full text-sm">
+    <table class="w-full min-w-[640px] text-sm">
       <thead>
         <tr class="text-left text-xs uppercase tracking-wide text-slate-400">
           <th class="pb-2 pr-4 font-medium">Campaign</th>
@@ -98,7 +98,7 @@ const clickChartCard = `
 const outcomeCard = `
 <div class="card p-5">
   <h2 class="mb-4 text-base font-semibold text-slate-900">Outcome Distribution</h2>
-  <div class="flex items-center gap-6">
+  <div class="flex flex-col items-center gap-6 sm:flex-row">
     <div class="relative h-44 w-44 shrink-0">
       <canvas id="outcomeChart"></canvas>
       <div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
@@ -106,7 +106,7 @@ const outcomeCard = `
         <div class="text-xs text-slate-400">responses</div>
       </div>
     </div>
-    <div class="flex-1 space-y-3 text-sm">
+    <div class="w-full flex-1 space-y-3 text-sm">
       ${legendRow("bg-red-400", "Clicked link", totalClickedOnly, totalAssigned)}
       ${legendRow("bg-red-700", "Submitted credentials", totalSubmitted, totalAssigned)}
       ${legendRow("bg-emerald-500", "Reported", totalReported, totalAssigned)}

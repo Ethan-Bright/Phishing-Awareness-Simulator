@@ -27,9 +27,13 @@ db = firestore.client()
 VALID_ROLES = {"student", "staff", "lecturer", "sales", "consultant"}
 VALID_CATEGORIES = {"eduvos_portal", "nsfas", "it_helpdesk"}
 VALID_EVENTS = {"opened", "clicked", "submitted", "reported"}
+SAST = datetime.timezone(datetime.timedelta(hours=2), "SAST")
 
 # Final-outcome ranking. Higher rank wins when a new event arrives.
+# "submitted" is terminal: once a participant has entered details on the fake
+# page, a later report cannot overwrite it (see _apply_event).
 RANK = {"pending": 0, "ignored": 0, "opened": 1, "clicked": 2, "submitted": 3, "reported": 4}
+TERMINAL_OUTCOMES = {"submitted"}
 COUNTED_BUCKETS = {"opened", "clicked", "submitted", "reported", "ignored"}
 
 
@@ -55,7 +59,9 @@ def _json(payload: dict, status: int = 200) -> https_fn.Response:
 
 
 def _today() -> str:
-    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+    # Daily buckets follow South African time (SAST, UTC+2, no DST) so
+    # late-evening events land on the right day in the dashboard chart.
+    return datetime.datetime.now(SAST).strftime("%Y-%m-%d")
 
 
 # --------------------------------------------------------------------------- #
@@ -80,9 +86,13 @@ def scenario_delivery(req: https_fn.Request) -> https_fn.Response:
     c = s.get("content", {})
 
     campaign = db.collection("campaigns").document(a["campaignId"]).get()
-    running = campaign.exists and campaign.to_dict().get("status") == "running"
-    if running:
-        _apply_event(token, "opened")
+    status = campaign.to_dict().get("status") if campaign.exists else None
+    if status != "running":
+        # Late openers must not see a live-looking phish whose response is
+        # never recorded. Tell them the exercise is over instead.
+        return _json({"ok": False, "ended": True,
+                      "error": "This awareness exercise has ended."}, 410)
+    _apply_event(token, "opened")
 
     # Only the "email" is sent to the participant. Indicators and debrief are
     # withheld until after a response, via the debrief endpoint.
@@ -142,6 +152,11 @@ def scenario_debrief(req: https_fn.Request) -> https_fn.Response:
     if not assignment.exists:
         return _json({"ok": False, "error": "Invalid link."}, 404)
     a = assignment.to_dict()
+
+    # Indicators are the "answer". Only release them once the participant has
+    # actually responded, so swapping /s?t= for /debrief?t= gives nothing away.
+    if a.get("outcome", "pending") not in ("clicked", "submitted", "reported"):
+        return _json({"ok": False, "error": "Not available yet. Respond to the message first."}, 403)
 
     scenario = db.collection("scenarios").document(a["scenarioId"]).get()
     if not scenario.exists:
@@ -242,7 +257,10 @@ def _apply_event(token: str, event_type: str):
         a = snap.to_dict()
         old = a.get("outcome", "pending")
         candidate = event_type  # already one of opened/clicked/submitted/reported
-        new = old if RANK[old] >= RANK[candidate] else candidate
+        if old in TERMINAL_OUTCOMES:
+            new = old
+        else:
+            new = old if RANK[old] >= RANK[candidate] else candidate
 
         agg_ref = db.collection("aggregates").document(a["campaignId"])
         daily_ref = db.collection("daily_stats").document(_today())

@@ -43,19 +43,21 @@ credential input, and keeping raw data server-side.
 ## Project layout
 
 ```
-public/                Static frontend (Firebase Hosting)
-  index.html           Public landing page
-  dashboard.html       Dashboard
-  campaigns.html       Create/launch campaigns, get distribution links
-  scenarios.html       Scenario library + AI drafts + human review
-  participants.html    Aggregate view by role (no individual profiles)
-  groups.html          Role-based delivery groups
-  reports.html         Aggregate trends + CSV export
-  settings.html        Governance summary
-  login.html           Sign in (routes admins and participants by claim)
-  portal*.html         Participant portal: quizzes, learning, company stats
-  s.html               Participant-facing scenario (email + fake login)
-  debrief.html         Post-response debrief
+public/                Static frontend (Firebase Hosting, clean URLs: /dashboard serves dashboard.html)
+  index.html           Public landing page            /
+  dashboard.html       Dashboard                      /dashboard
+  campaigns.html       Create/launch campaigns, links /campaigns
+  scenarios.html       Scenario library + AI drafts   /scenarios
+  quiz-library.html    Human-approved quiz emails     /quiz-library
+  participants.html    Aggregate view by role         /participants
+  groups.html          Role-based delivery groups     /groups
+  reports.html         Aggregate trends + CSV export  /reports
+  settings.html        Governance summary             /settings
+  login.html           Sign in (routes by claim)      /login
+  portal*.html         Participant portal             /portal, /portal-quizzes, /portal-learn, /portal-stats
+  quiz.html            Phish or Legit? training quiz  /quiz
+  s.html               Participant-facing scenario    /s?t=TOKEN
+  debrief.html         Post-response debrief + coach  /debrief?t=TOKEN
   js/                  ES module frontend logic
   css/app.css          Built Tailwind output (do not edit by hand)
 functions/             Python Cloud Functions

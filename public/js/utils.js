@@ -97,3 +97,21 @@ export function openModal(title, bodyHTML, { wide = false } = {}) {
   wrap.addEventListener("click", (e) => { if (e.target === wrap) close(); });
   return { el: wrap, body: wrap.querySelector("#modal-body"), close };
 }
+
+// Styled replacement for window.confirm(). Resolves true/false.
+export function confirmModal(title, message, { confirmText = "Confirm", danger = false } = {}) {
+  return new Promise((resolve) => {
+    const m = openModal(title, `
+      <p class="text-sm text-slate-600">${escapeHtml(message)}</p>
+      <div class="mt-6 flex justify-end gap-2">
+        <button data-cancel class="btn-secondary">Cancel</button>
+        <button data-ok class="btn-primary ${danger ? "bg-red-600 hover:bg-red-700 focus:ring-red-500" : ""}">${escapeHtml(confirmText)}</button>
+      </div>`);
+    const done = (v) => { m.close(); resolve(v); };
+    m.body.querySelector("[data-cancel]").addEventListener("click", () => done(false));
+    m.body.querySelector("[data-ok]").addEventListener("click", () => done(true));
+    m.el.querySelector("[data-close]").addEventListener("click", () => resolve(false));
+    m.el.addEventListener("click", (e) => { if (e.target === m.el) resolve(false); });
+    m.body.querySelector("[data-ok]").focus();
+  });
+}

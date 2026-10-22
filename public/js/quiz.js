@@ -1,5 +1,5 @@
 import { escapeHtml } from "./utils.js";
-import { createCoach, chatCard, mountChat } from "./quiz-chat.js";
+import { createCoach, chatCard, mountChat } from "./coach.js";
 import { db } from "./firebase-init.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 

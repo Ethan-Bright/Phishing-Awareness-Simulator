@@ -14,6 +14,23 @@ function invalid(msg) {
     </div>`;
 }
 
+function ended() {
+  root.innerHTML = `
+    <div class="flex min-h-screen items-center justify-center p-6">
+      <div class="card max-w-md p-8 text-center">
+        <h1 class="text-lg font-semibold text-slate-900">This exercise has ended</h1>
+        <p class="mt-2 text-sm text-slate-500">
+          The message behind this link was part of a phishing awareness simulation that has now closed.
+          It was not a real email, and no response is recorded from here.
+        </p>
+        <p class="mt-4 text-sm text-slate-500">
+          If you'd like to practise spotting phishing, try the training quiz.
+        </p>
+        <a href="/quiz" class="btn-primary mt-6">Open the quiz</a>
+      </div>
+    </div>`;
+}
+
 async function recordEvent(type) {
   try {
     await fetch("/api/event", {
@@ -73,6 +90,9 @@ function renderEmail(s) {
 
 function renderFakeLogin(s) {
   const c = s.content || {};
+  // Random field names + "new-password" stop browsers and password managers
+  // from offering someone's real saved credentials on the fake form.
+  const nonce = Math.random().toString(36).slice(2, 10);
   root.innerHTML = `
   <div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-navy-900 to-navy-950 p-6">
     <div class="w-full max-w-sm">
@@ -86,11 +106,11 @@ function renderFakeLogin(s) {
       <form id="login" class="card p-6">
         <div class="mb-4">
           <label class="label">Username / Student number</label>
-          <input class="input" type="text" autocomplete="off" required />
+          <input class="input" type="text" name="u-${nonce}" autocomplete="off" data-lpignore="true" data-1p-ignore data-bwignore required />
         </div>
         <div class="mb-4">
           <label class="label">Password</label>
-          <input class="input" type="password" autocomplete="off" required />
+          <input class="input" type="password" name="p-${nonce}" autocomplete="new-password" data-lpignore="true" data-1p-ignore data-bwignore required />
         </div>
         <button type="submit" class="btn-primary w-full">Sign in</button>
       </form>
@@ -112,9 +132,9 @@ async function start() {
   if (!token) return invalid("This link is missing its access token.");
   try {
     const res = await fetch(`/api/scenario?t=${encodeURIComponent(token)}`);
-    if (!res.ok) return invalid("This link is not valid or has expired.");
-    const data = await res.json();
-    if (!data.ok) return invalid(data.error || "This link is not valid.");
+    const data = await res.json().catch(() => ({}));
+    if (data.ended) return ended();
+    if (!res.ok || !data.ok) return invalid(data.error || "This link is not valid or has expired.");
     renderEmail(data.scenario);
   } catch (_) {
     invalid("Could not load this message. Please try again later.");

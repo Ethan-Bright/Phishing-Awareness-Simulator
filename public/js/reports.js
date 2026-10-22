@@ -63,7 +63,7 @@ function render() {
     <div class="card mt-6 p-5">
       <h2 class="mb-4 text-base font-semibold text-slate-900">Detail (aggregate rows)</h2>
       <div class="overflow-x-auto">
-        <table class="w-full text-sm">
+        <table class="w-full min-w-[880px] text-sm">
           <thead><tr class="text-left text-xs uppercase text-slate-400">
             <th class="pb-2 pr-4">Campaign</th><th class="pb-2 pr-4">Role</th><th class="pb-2 pr-4">Category</th>
             <th class="pb-2 pr-4">Round</th><th class="pb-2 pr-4">Total</th><th class="pb-2 pr-4">Clicked</th>

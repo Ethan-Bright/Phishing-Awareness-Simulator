@@ -40,14 +40,20 @@ function sidebarHTML(active, variant) {
     </a>`
   ).join("");
 
+  // Fixed sidebar on lg+. Below that it is an off-canvas drawer toggled from
+  // the top bar (see mountShell).
   return `
-  <aside class="fixed inset-y-0 left-0 z-20 flex w-64 flex-col bg-gradient-to-b from-navy-900 to-navy-950 text-white">
+  <div id="shell-backdrop" class="fixed inset-0 z-20 hidden bg-slate-900/50 lg:hidden"></div>
+  <aside id="shell-sidebar" class="fixed inset-y-0 left-0 z-30 flex w-64 -translate-x-full flex-col bg-gradient-to-b from-navy-900 to-navy-950 text-white transition-transform duration-200 lg:translate-x-0">
     <div class="flex items-center gap-3 px-5 py-5">
       <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-white">${icons.shield}</div>
       <div class="leading-tight">
         <div class="text-base font-semibold">PhishSim Pro</div>
         <div class="text-xs text-slate-400">${variant === "participant" ? "Participant portal" : "Security Awareness"}</div>
       </div>
+      <button type="button" id="shell-close" class="ml-auto rounded-md p-1.5 text-slate-400 hover:bg-white/10 hover:text-white lg:hidden" aria-label="Close menu">
+        <span class="block h-5 w-5">${icons.close}</span>
+      </button>
     </div>
     <nav class="mt-2 flex-1 space-y-1 px-3">${items}</nav>
     <div class="border-t border-white/10 p-3">
@@ -73,12 +79,17 @@ function sidebarHTML(active, variant) {
 
 function topbarHTML(title, subtitle) {
   return `
-  <header class="flex items-start justify-between px-8 pt-7">
-    <div>
-      <h1 class="text-2xl font-bold text-slate-900">${title}</h1>
-      <p class="mt-1 text-sm text-slate-500">${subtitle || ""}</p>
+  <header class="flex items-start justify-between gap-3 px-4 pt-5 sm:px-6 lg:px-8 lg:pt-7">
+    <div class="flex min-w-0 items-start gap-3">
+      <button type="button" id="shell-open" class="mt-0.5 shrink-0 rounded-lg p-2 text-slate-600 hover:bg-slate-100 lg:hidden" aria-label="Open menu" aria-controls="shell-sidebar" aria-expanded="false">
+        <span class="block h-6 w-6">${icons.menu}</span>
+      </button>
+      <div class="min-w-0">
+        <h1 class="text-xl font-bold text-slate-900 sm:text-2xl">${title}</h1>
+        <p class="mt-1 text-sm text-slate-500">${subtitle || ""}</p>
+      </div>
     </div>
-    <button class="relative rounded-full p-2 text-slate-500 hover:bg-slate-100" title="Notifications">
+    <button class="relative shrink-0 rounded-full p-2 text-slate-500 hover:bg-slate-100" title="Notifications">
       ${icons.bell}
       <span class="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-red-500"></span>
     </button>
@@ -92,10 +103,17 @@ export function mountShell({ active, title, subtitle, variant = "admin" }) {
   const appEl = document.getElementById("app");
   appEl.innerHTML = `
     ${sidebarHTML(active, variant)}
-    <div class="ml-64 flex min-h-screen flex-1 flex-col bg-slate-50">
+    <div class="flex min-h-screen w-full min-w-0 flex-1 flex-col bg-slate-50 lg:ml-64">
       ${topbarHTML(title, subtitle)}
-      <main id="page" class="flex-1 px-8 py-6"></main>
-      <footer class="px-8 py-4 text-center text-xs text-slate-400">
+      <main id="page" class="flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-6">
+        <div class="animate-pulse space-y-5" aria-busy="true" aria-label="Loading">
+          <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+            ${Array(4).fill(`<div class="card h-24"></div>`).join("")}
+          </div>
+          <div class="card h-72"></div>
+        </div>
+      </main>
+      <footer class="px-4 py-4 text-center text-xs text-slate-400 sm:px-8">
         &copy; ${new Date().getFullYear()} PhishSim Pro (Eduvos research use). Aggregate-only reporting. No real credentials stored.
       </footer>
     </div>`;
@@ -135,6 +153,29 @@ export function mountShell({ active, title, subtitle, variant = "admin" }) {
     await signOut(auth);
     location.href = "/login";
   });
+
+  // Mobile drawer (no-op on lg+ where the sidebar is always visible).
+  const sidebar = document.getElementById("shell-sidebar");
+  const backdrop = document.getElementById("shell-backdrop");
+  const openBtn = document.getElementById("shell-open");
+
+  function setDrawerOpen(open) {
+    sidebar.classList.toggle("-translate-x-full", !open);
+    backdrop.classList.toggle("hidden", !open);
+    openBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    document.body.classList.toggle("overflow-hidden", open);
+    if (!open) setUserMenuOpen(false);
+  }
+
+  openBtn.addEventListener("click", (event) => { event.stopPropagation(); setDrawerOpen(true); });
+  document.getElementById("shell-close").addEventListener("click", () => setDrawerOpen(false));
+  backdrop.addEventListener("click", () => setDrawerOpen(false));
+  sidebar.addEventListener("click", (event) => event.stopPropagation());
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !backdrop.classList.contains("hidden")) setDrawerOpen(false);
+  });
+  // If the viewport grows past lg while the drawer is open, drop the lock.
+  window.matchMedia("(min-width: 1024px)").addEventListener("change", (e) => { if (e.matches) setDrawerOpen(false); });
 
   return document.getElementById("page");
 }

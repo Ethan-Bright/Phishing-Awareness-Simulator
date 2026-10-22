@@ -19,6 +19,7 @@ import {
   fmtDate,
   toast,
   openModal,
+  confirmModal,
   engaged
 } from "./utils.js";
 
@@ -64,7 +65,7 @@ function render() {
     </div>
     <div class="card p-5">
       <div class="overflow-x-auto">
-        <table class="w-full text-sm">
+        <table class="w-full min-w-[720px] text-sm">
           <thead>
             <tr class="text-left text-xs uppercase tracking-wide text-slate-400">
               <th class="pb-2 pr-4 font-medium">Campaign</th>
@@ -146,13 +147,19 @@ function newModal() {
 }
 
 async function launch(id) {
-  if (!confirm("Launch this campaign? Links become active for distribution.")) return;
+  const ok = await confirmModal("Launch campaign",
+    "Launch this campaign? One link per participant code is generated and becomes active for distribution.",
+    { confirmText: "Launch" });
+  if (!ok) return;
   try { await callLaunchCampaign({ campaignId: id }); toast("Campaign launched", "success"); await reload(); }
   catch (e) { toast(e.message || "Failed", "error"); }
 }
 
 async function complete(id) {
-  if (!confirm("Complete this campaign? Remaining non-responders are logged as 'ignored'.")) return;
+  const ok = await confirmModal("Complete campaign",
+    "Complete this campaign? Links stop working and remaining non-responders are logged as 'ignored'. This cannot be undone.",
+    { confirmText: "Complete", danger: true });
+  if (!ok) return;
   try { await callCompleteCampaign({ campaignId: id }); toast("Campaign completed", "success"); await reload(); }
   catch (e) { toast(e.message || "Failed", "error"); }
 }
@@ -176,16 +183,33 @@ async function showLinks(id) {
       </tr>`;
     }).join("");
     m.body.innerHTML = `
-      <p class="mb-3 text-sm text-slate-500">Distribute one link per participant code through your own approved channel.
-      The code&#8594;person mapping is kept separate from this system.</p>
-      <div class="max-h-[55vh] overflow-y-auto">
-        <table class="w-full text-sm">
+      <div class="mb-3 flex flex-wrap items-start justify-between gap-3">
+        <p class="max-w-xl text-sm text-slate-500">Distribute one link per participant code through your own approved channel.
+        The code&#8594;person mapping is kept separate from this system.</p>
+        ${items.length ? `<button id="links-csv" class="btn-secondary shrink-0 px-3 py-1.5 text-xs">${icons.download}<span>Download CSV (code, link)</span></button>` : ""}
+      </div>
+      <div class="max-h-[55vh] overflow-auto">
+        <table class="w-full min-w-[560px] text-sm">
           <thead><tr class="text-left text-xs uppercase text-slate-400"><th class="pb-2 pr-4">Code</th><th class="pb-2 pr-4">Outcome</th><th class="pb-2">Link</th></tr></thead>
           <tbody>${rows || `<tr><td class="py-4 text-slate-400" colspan="3">No links. Launch the campaign first.</td></tr>`}</tbody>
         </table>
       </div>`;
     m.body.querySelectorAll("[data-copy]").forEach((b) =>
       b.addEventListener("click", () => { navigator.clipboard.writeText(b.dataset.copy); toast("Link copied", "success"); }));
+    m.body.querySelector("#links-csv")?.addEventListener("click", () => {
+      const camp = campaigns.find((c) => c.id === id);
+      const csvCell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+      const lines = [["code", "link"].join(","),
+        ...items.map((l) => [csvCell(l.code), csvCell(`${origin}/s?t=${l.token}`)].join(","))];
+      const blob = new Blob([lines.join("\r\n")], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      const slug = (camp?.name || "campaign").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      a.download = `phishsim-links-${slug}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+      toast(`${items.length} links exported`, "success");
+    });
   } catch (e) {
     m.body.innerHTML = `<p class="text-sm text-red-600">${escapeHtml(e.message || "Failed to load links")}</p>`;
   }

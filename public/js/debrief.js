@@ -1,5 +1,5 @@
 import { escapeHtml } from "./utils.js";
-import { createScenarioCoach, chatCard, mountChat } from "./quiz-chat.js";
+import { createScenarioCoach, chatCard, mountChat } from "./coach.js";
 
 const root = document.getElementById("root");
 const token = new URLSearchParams(location.search).get("t");

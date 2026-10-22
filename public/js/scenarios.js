@@ -17,7 +17,8 @@ import {
   escapeHtml,
   fmtDate,
   toast,
-  openModal
+  openModal,
+  confirmModal
 } from "./utils.js";
 
 await requireAdmin();
@@ -136,14 +137,14 @@ function render() {
       <a href="/quiz" class="ml-2 font-medium text-brand-600 hover:underline">Preview the quiz</a>
     </div>` : ""}
     <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex gap-1 rounded-xl bg-white p-1 shadow-card">
+      <div class="flex max-w-full gap-1 overflow-x-auto rounded-xl bg-white p-1 shadow-card">
         ${tab("all", "All")}
         ${tab("pending_review", "Needs review")}
         ${tab("live", "Live")}
         ${tab("denied", "Denied")}
         ${tab("retired", "Retired")}
       </div>
-      <div class="flex gap-2">
+      <div class="flex flex-wrap gap-2">
         <button id="ai-btn" class="btn-secondary">${icons.sparkles}<span>AI draft</span></button>
         <button id="new-btn" class="btn-primary">${icons.plus}<span>${QUIZ_MODE ? "New quiz email" : "New scenario"}</span></button>
       </div>
@@ -371,9 +372,11 @@ function aiModal() {
 }
 
 async function approve(id) {
-  if (!confirm(QUIZ_MODE
-    ? "Confirm this quiz email has been human-reviewed and can be shown to learners?"
-    : "Confirm this scenario has been human-reviewed and is safe to go live?")) return;
+  const ok = await confirmModal("Approve and go live", QUIZ_MODE
+    ? "Confirm this quiz email has been human-reviewed and can be shown to learners."
+    : "Confirm this scenario has been human-reviewed and is safe to go live in campaigns.",
+    { confirmText: "Approve" });
+  if (!ok) return;
   try {
     await callApproveScenario({ scenarioId: id });
     toast("Scenario is now live", "success");
@@ -382,7 +385,9 @@ async function approve(id) {
 }
 
 async function deny(id) {
-  if (!confirm("Deny this draft? It will not go live.")) return;
+  const ok = await confirmModal("Deny draft", "Deny this draft? It will not go live.",
+    { confirmText: "Deny", danger: true });
+  if (!ok) return;
   try {
     await callDenyScenario({ scenarioId: id });
     toast("Draft denied", "success");
